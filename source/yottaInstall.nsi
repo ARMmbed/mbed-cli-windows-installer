@@ -7,12 +7,18 @@
 ;--------------------------------
 ;Include Modern UI
 !include MUI2.nsh
+;!define MUI_ICON icon_file
+!define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_BITMAP "..\source\mbed-enabled-logo.bmp" ; recommended size: 150x57 pixels
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\source\mbed-enabled-logo.bmp" ;recommended size: 164x314 pixels
+!define MUI_WELCOMEFINISHPAGE_BITMAP_NOSTRETCH
+!define MUI_ICON p.ico
 
 ;--------------------------------
 ;General
   !define PRODUCT_NAME "yotta"
   !define PRODUCT_VERSION "0.0.1"
-  !define PRODUCT_PUBLISHER "ARMmbed"
+  !define PRODUCT_PUBLISHER "ARM®mbed™"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "yotta_install_v${PRODUCT_VERSION}.exe"
@@ -37,7 +43,9 @@
 
 ;--------------------------------
 ;Branding
-BrandingText "next gen build system from ARMmbed"
+BrandingText "next gen build system from ${PRODUCT_PUBLISHER}"
+
+;!define MUI_WELCOMEFINISHPAGE_BITMAP "mbed-enabled-logo.bmp"
 ;BGGradient 00699d 0079b4  cc2020
 
 ;--------------------------------
