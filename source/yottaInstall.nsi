@@ -7,11 +7,10 @@
 ;--------------------------------
 ;Include Modern UI
 !include MUI2.nsh
-;!define MUI_ICON icon_file
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "..\source\mbed-enabled-logo.bmp" ; recommended size: 150x57 pixels
-!define MUI_WELCOMEFINISHPAGE_BITMAP "..\source\mbed-enabled-logo.bmp" ;recommended size: 164x314 pixels
-!define MUI_WELCOMEFINISHPAGE_BITMAP_NOSTRETCH
+!define MUI_HEADERIMAGE_BITMAP "..\source\HeaderImage_Bitmap.bmp" ; recommended size: 150x57 pixels
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\source\WelcomeScreen.bmp" ;recommended size: 164x314 pixels
+;!define MUI_WELCOMEFINISHPAGE_BITMAP_NOSTRETCH
 !define MUI_ICON p.ico
 
 ;--------------------------------
