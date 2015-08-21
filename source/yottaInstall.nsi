@@ -77,9 +77,8 @@ FunctionEnd
 
 Section "python 2.7.10" SecPython
   SetOutPath $INSTDIR
-  MessageBox MB_OK "Installing python: make sure to select check box to add to path."
   File "..\prerequisites\${PYTHON_INSTALLER}"
-  ExecWait '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}"'
+  ExecWait '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qr'
 SectionEnd
 
 Section "gcc" SecGCC
