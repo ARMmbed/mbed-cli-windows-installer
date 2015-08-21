@@ -20,11 +20,12 @@
   ShowInstDetails show
 
 
-  ;Request application privileges for Windows Vista
-  RequestExecutionLevel user
+  ;Request application privileges
+  RequestExecutionLevel admin
 
 ;--------------------------------
 ;Pages
+!define MUI_ABORTWARNING
 !define MUI_WELCOMEPAGE_TITLE 'yotta - it means build awesome'
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\source\license.txt"
@@ -59,12 +60,12 @@ SectionEnd
 
 Section "gcc" SecGCC
   File "..\prerequisites\gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
-  ExecWait "$INSTDIR\prerequisites\gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
+  ExecWait "$INSTDIR\gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
 SectionEnd
 
-Section "cMake" section_index_output
+Section "cMake" SecCmake
   File "..\prerequisites\cmake-3.2.1-win32-x86.exe"
-  ExecWait "$INSTDIR\prerequisites\cmake-3.2.1-win32-x86.exe"
+  ExecWait "$INSTDIR\cmake-3.2.1-win32-x86.exe"
 SectionEnd
 
 Section "ninja" SecNinja
