@@ -4,14 +4,37 @@
 ; pip is installed as part of python, it is assumed to exist on the user system
 ;--------------------------------
 
-!define PRODUCT_NAME "yotta"
-!define PRODUCT_VERSION "1.0"
-!define PRODUCT_PUBLISHER "ARMmbed"
+;--------------------------------
+;Include Modern UI
+!include MUI2.nsh
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "yotta_install.exe"
-InstallDir "$PROGRAMFILES\yotta"
-ShowInstDetails show
+;--------------------------------
+;General
+  !define PRODUCT_NAME "yotta"
+  !define PRODUCT_VERSION "0.0.1"
+  !define PRODUCT_PUBLISHER "ARMmbed"
+
+  Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+  OutFile "yotta_install_v${PRODUCT_VERSION}.exe"
+  InstallDir "$PROGRAMFILES\yotta"
+  ShowInstDetails show
+
+
+  ;Request application privileges for Windows Vista
+  RequestExecutionLevel user
+
+;--------------------------------
+;Pages
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE "..\source\license.txt"
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_COMPONENTS
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+;--------------------------------
+;Languages
+!insertmacro MUI_LANGUAGE "English"
 
 Section -SETTINGS
   SetOutPath "$INSTDIR"
@@ -19,37 +42,19 @@ Section -SETTINGS
 SectionEnd
 
 ;--------------------------------
+;Installer Sections
 
-; Pages
+Section "Dummy Section" SecDummy
 
-Page license
-Page directory
-Page instfiles
+  SetOutPath "$INSTDIR"
+  
+  ;ADD YOUR OWN FILES HERE...
+  
+
+SectionEnd
 
 ;--------------------------------
-
-PageEx license
-	LicenseText "Readme"
-	LicenseData license.txt
-PageExEnd
-
-
-;
-; The stuff to install
-;
-Section "" ;No components page, name is not important
-
-  ; Set output path to the installation directory.
-  SetOutPath $INSTDIR
-  
-  ; Put file there
-  File example1.nsi
-  
-SectionEnd ; end the section
-
-;
-; These are the programs that are needed by yotta.
-;
+; yotta dependencies
 Section -prerequisites
   SetOutPath $INSTDIR\prerequisites
   
