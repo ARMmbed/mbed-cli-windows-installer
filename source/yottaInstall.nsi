@@ -102,7 +102,6 @@ SectionEnd
 
 Section "yotta (requires pip)" SecYotta
   File "..\source\pip_install_yotta.bat"
-  ExecWait '"set" PATH "%PATH%;C:\Python27\Scripts;' ; add python scripts folder to environment so we can run pip. Environment hasnt refreshed yet. 
   ExecWait "$INSTDIR\pip_install_yotta.bat"
 SectionEnd
 
