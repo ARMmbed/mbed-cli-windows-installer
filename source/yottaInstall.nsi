@@ -31,7 +31,7 @@
   ShowInstDetails show
 
   ;Request application privileges
-  RequestExecutionLevel admin
+  ;RequestExecutionLevel admin
 
 ;--------------------------------
 ;Pages
@@ -65,13 +65,13 @@ SectionEnd
 ;Initialization Function
 Function .onInit
 ;Ensure Admin Rights for runtime
-UserInfo::GetAccountType
-pop $0
-${If} $0 != "admin" ;Require admin rights on NT4+
-        MessageBox mb_iconstop "Administrator rights required!"
-        SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
-        Quit
-${EndIf}
+;UserInfo::GetAccountType
+;pop $0
+;${If} $0 != "admin" ;Require admin rights on NT4+
+;        MessageBox mb_iconstop "Administrator rights required!"
+;        SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
+;        Quit
+;${EndIf}
 FunctionEnd
 
 ;--------------------------------
@@ -82,7 +82,7 @@ Section "python 2.7.10" SecPython
   File "..\prerequisites\${PYTHON_INSTALLER}"
   ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
   ; This gets python to add itsself to the path.
-  ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" /qr'
+  ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qr'
   ; for logging msiexec /i python-2.7.10.msi /qb /l*v "c:\Program Files\yotta\install.log.txt"
 SectionEnd
 
@@ -106,5 +106,13 @@ SectionEnd
 Section "yotta (requires pip)" SecYotta
   File "..\source\pip_install_yotta.bat"
   ExecWait '"$INSTDIR\pip_install_yotta.bat" "$INSTDIR"'
+SectionEnd
+
+Section "Add yotta shortcut to StartMenu / Desktop" SecRunYotta
+  File "..\source\run_yotta.bat"
+  File "..\source\p.ico"
+  Exec "run_yotta.bat"
+  CreateShortCut "$SMPROGRAMS\Run Yotta.lnk" "$INSTDIR\run_yotta.bat"  "" "$INSTDIR\p.ico"
+  CreateShortCut "$DESKTOP\Run Yotta.lnk" "run_yotta.bat" "" "$INSTDIR\p.ico"
 SectionEnd
 
