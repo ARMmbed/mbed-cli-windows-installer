@@ -64,10 +64,6 @@ SectionEnd
 ;--------------------------------
 ;Initialization Function
 Function .onInit
-; set YOTTA_PATH environment variable
-ExecWait "setx YOTTA_PATH $INSTDIR;$INSTDIR\gcc\bin;$INSTDIR\python;$INSTDIR\python\Scripts;$INSTDIR\cmake\bin;" ; permenant setting
-ExecWait "set  YOTTA_PATH $INSTDIR;$INSTDIR\gcc\bin;$INSTDIR\python;$INSTDIR\python\Scripts;$INSTDIR\cmake\bin;" ; temporary setting
-
 ;Ensure Admin Rights for runtime
 UserInfo::GetAccountType
 pop $0
@@ -109,6 +105,6 @@ SectionEnd
 
 Section "yotta (requires pip)" SecYotta
   File "..\source\pip_install_yotta.bat"
-  ExecWait "$INSTDIR\pip_install_yotta.bat"
+  ExecWait '"$INSTDIR\pip_install_yotta.bat" "$INSTDIR"'
 SectionEnd
 
