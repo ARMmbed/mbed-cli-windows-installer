@@ -12,9 +12,9 @@ To make installing yotta on windows easier
 * A shortcut is added to the desktop that sets `PATH = YOTTA_PATH + PATH` and then runs the command line. This was the easiest  way to install yotta without clobbering the users PATH variable.
 
 ## How to use
-1) install nsis
-2) go to source/yottaInstall.nsi
-3) right click and select `Compile NSIS Script` (optionally add compression)
+1) install nsis <br>
+2) go to source/yottaInstall.nsi <br>
+3) right click and select `Compile NSIS Script` (optionally add compression) <br>
 4) thats it, you should have a nice .msi to run on windows (unless you have build errors, then sort those out.)
 
 ## Updating pre-requisites
