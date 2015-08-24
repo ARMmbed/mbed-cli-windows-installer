@@ -2,6 +2,8 @@
 ;
 ; This script installs the yotta dependencies and then yotta itself
 ; pip is installed as part of python, it is assumed to exist on the user system
+; All dependencies use NSIS for their installers, See http://nsis.sourceforge.net/Docs/Chapter4.html#4.12
+;  for a full list of NSIS install parameters
 ;--------------------------------
 
 ;--------------------------------
@@ -27,7 +29,6 @@
   OutFile "yotta_install_v${PRODUCT_VERSION}.exe"
   InstallDir "$PROGRAMFILES\yotta"
   ShowInstDetails show
-
 
   ;Request application privileges
   RequestExecutionLevel admin
@@ -61,8 +62,13 @@ Section -SETTINGS
 SectionEnd
 
 ;--------------------------------
-;Ensure Admin Rights for runtime
+;Initialization Function
 Function .onInit
+; set YOTTA_PATH environment variable
+ExecWait "setx YOTTA_PATH $INSTDIR;$INSTDIR\gcc\bin;$INSTDIR\python;$INSTDIR\python\Scripts;$INSTDIR\cmake\bin;" ; permenant setting
+ExecWait "set  YOTTA_PATH $INSTDIR;$INSTDIR\gcc\bin;$INSTDIR\python;$INSTDIR\python\Scripts;$INSTDIR\cmake\bin;" ; temporary setting
+
+;Ensure Admin Rights for runtime
 UserInfo::GetAccountType
 pop $0
 ${If} $0 != "admin" ;Require admin rights on NT4+
@@ -78,24 +84,26 @@ FunctionEnd
 Section "python 2.7.10" SecPython
   SetOutPath $INSTDIR
   File "..\prerequisites\${PYTHON_INSTALLER}"
-  ExecWait '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qr'
+  ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
+  ; This gets python to add itsself to the path.
+  ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" /qr'
+  ; for logging msiexec /i python-2.7.10.msi /qb /l*v "c:\Program Files\yotta\install.log.txt"
 SectionEnd
 
 Section "gcc" SecGCC
-  MessageBox MB_OK "Installing GCC: make sure to select check box to add to path."
   File "..\prerequisites\${GCC_INSTALLER}"
-  ExecWait "$INSTDIR\${GCC_INSTALLER}"
+  ExecWait "$INSTDIR\${GCC_INSTALLER} /S /D=$INSTDIR\gcc"
 SectionEnd
 
 Section "cMake" SecCmake
-  MessageBox MB_OK "Installing Cmake: make sure to select check box to add to path." 
   File "..\prerequisites\${CMAKE_INSTALLER}"
-  ExecWait "$INSTDIR\${CMAKE_INSTALLER}"
+  ; TODO: get cmake to add itself to the path via command line install options
+  ExecWait "$INSTDIR\${CMAKE_INSTALLER} /S /D=$INSTDIR\cmake"
 SectionEnd
 
 Section "ninja" SecNinja
   File "..\prerequisites\${NINJA_INSTALLER}"
-  ExecWait '"setx" PATH "%PATH%;$INSTDIR"' ; setx is a windows vista,7,8,10 command to modify the path, here we are adding the yotta directory to the path
+  ;ExecWait '"setx" PATH "%PATH%;$INSTDIR"' ; setx is a windows vista,7,8,10 command to modify the path, here we are adding the yotta directory to the path
   ; note: this will fail on XP, XP users are not covered and will need to add ninja to their path manually
 SectionEnd
 
