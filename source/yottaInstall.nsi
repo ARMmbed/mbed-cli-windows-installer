@@ -112,7 +112,7 @@ Section "Add yotta shortcut to StartMenu / Desktop" SecRunYotta
   File "..\source\run_yotta.bat"
   File "..\source\p.ico"
   Exec "run_yotta.bat"
-  CreateShortCut "$SMPROGRAMS\Run Yotta.lnk" "$INSTDIR\run_yotta.bat"  "" "$INSTDIR\p.ico"
-  CreateShortCut "$DESKTOP\Run Yotta.lnk" "run_yotta.bat" "" "$INSTDIR\p.ico"
+  CreateShortCut "$SMPROGRAMS\Run Yotta.lnk" "$INSTDIR\run_yotta.bat"  ""  "$INSTDIR\p.ico"
+  CreateShortCut "$DESKTOP\Run Yotta.lnk"    "$INSTDIR\run_yotta.bat"  ""  "$INSTDIR\p.ico"
 SectionEnd
 
