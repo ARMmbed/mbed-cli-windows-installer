@@ -23,3 +23,10 @@ Note: on fresh windows systems you will need to open explorer before installing 
 
 ## Updating pre-requisites
 When needed, you can update the gcc, cmake, or other dependencies by updating the executables in `/prerequisites/*` and then the equivalent lines in the `Config Section` of `/source/yottaInstall.nsi` .
+
+## License
+Yotta Windows Installer is licensed under Apache-2.0
+
+## Contributions / Pull Requests
+All contributions are Apache 2.0. Only submit contributions where you have authored all of the code. If you do this on work time make sure your employer is cool with this.
+
