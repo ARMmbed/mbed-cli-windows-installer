@@ -107,11 +107,12 @@ Section "ninja" SecNinja
 SectionEnd
 
 Section "yotta" SecYotta
+  ; --- install yotta ---
   File "..\source\pip_install_yotta.bat"
   ExecWait '"$INSTDIR\pip_install_yotta.bat" "$INSTDIR"'
+  ; --- add shortcut and batch script to windows ---
   File "..\source\run_yotta.bat"
   File "..\source\p.ico"
-;  Exec "run_yotta.bat"
   CreateShortCut "$SMPROGRAMS\Run Yotta.lnk" "$INSTDIR\run_yotta.bat"  ""  "$INSTDIR\p.ico"
   CreateShortCut "$DESKTOP\Run Yotta.lnk"    "$INSTDIR\run_yotta.bat"  ""  "$INSTDIR\p.ico"
 SectionEnd
@@ -119,6 +120,11 @@ SectionEnd
 Section /o "git-scm" SecGit
   File "..\prerequisites\${GIT_INSTALLER}"
   ExecWait "$INSTDIR\${GIT_INSTALLER} /S /D=$INSTDIR\git-scm"
+SectionEnd
+
+Section /o "mercurial" SecMercurial
+  File "..\source\pip_install_mercurial.bat"
+  ExecWait "$INSTDIR\pip_install_mercurial.bat" "$INSTDIR"
 SectionEnd
 
 Section /o "mbed serial driver" SecMbedSerialDriver
