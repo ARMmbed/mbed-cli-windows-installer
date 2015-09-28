@@ -34,7 +34,7 @@
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "yotta"
-  !define PRODUCT_VERSION   "0.1.1"
+  !define PRODUCT_VERSION   "0.1.2"
   !define PRODUCT_PUBLISHER "ARM®mbed™"
   !define PYTHON_INSTALLER  "python-2.7.10.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
@@ -119,12 +119,12 @@ Section "Add yotta shortcut to StartMenu / Desktop" SecRunYotta
   CreateShortCut "$DESKTOP\Run Yotta.lnk"    "$INSTDIR\run_yotta.bat"  ""  "$INSTDIR\p.ico"
 SectionEnd
 
-Section "git-scm" SecGit
+Section /o "git-scm" SecGit
   File "..\prerequisites\${GIT_INSTALLER}"
   ExecWait "$INSTDIR\${GIT_INSTALLER} /S /D=$INSTDIR\git-scm"
 SectionEnd
 
-Section "mbed serial driver" SecMbedSerialDriver
+Section /o "mbed serial driver" SecMbedSerialDriver
   File "..\prerequisites\${MBED_SERIAL_DRIVER}"
   MessageBox MB_OKCANCEL "Installing the mbed Windows serial driver. Please make sure to have a mbed enabled board plugged into your computer." IDOK install_mbed_driver IDCANCEL dont_install_mbed_driver
   install_mbed_driver:
