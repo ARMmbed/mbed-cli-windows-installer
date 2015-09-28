@@ -40,6 +40,8 @@
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
   !define CMAKE_INSTALLER   "cmake-3.2.1-win32-x86.exe"
   !define NINJA_INSTALLER   "ninja.exe"
+  !define GIT_INSTALLER     "Git-2.5.3-32-bit.exe"
+  !define MBED_SERIAL_DRIVER "mbedWinSerial_16466.exe"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "yotta_install_v${PRODUCT_VERSION}.exe"
@@ -117,3 +119,18 @@ Section "Add yotta shortcut to StartMenu / Desktop" SecRunYotta
   CreateShortCut "$DESKTOP\Run Yotta.lnk"    "$INSTDIR\run_yotta.bat"  ""  "$INSTDIR\p.ico"
 SectionEnd
 
+Section "git-scm" SecGit
+  File "..\prerequisites\${GIT_INSTALLER}"
+  ExecWait "$INSTDIR\${GIT_INSTALLER} /S /D=$INSTDIR\git-scm"
+SectionEnd
+
+Section "mbed serial driver" SecMbedSerialDriver
+  File "..\prerequisites\${MBED_SERIAL_DRIVER}"
+  MessageBox MB_OKCANCEL "Installing the mbed Windows serial driver. Please make sure to have a mbed enabled board plugged into your computer." IDOK install_mbed_driver IDCANCEL dont_install_mbed_driver
+  install_mbed_driver:
+    Exec "$INSTDIR\${MBED_SERIAL_DRIVER}"
+    Goto end_mbed_serial_driver
+  dont_install_mbed_driver:
+    MessageBox MB_OK "If you would like to install the mbed Windows serial driver in the future you can find it at $INSTDIR\${MBED_SERIAL_DRIVER}"
+  end_mbed_serial_driver:
+SectionEnd
