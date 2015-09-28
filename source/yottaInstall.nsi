@@ -140,22 +140,24 @@ SectionEnd
 
 ;--------------------------------
 ;Descriptions of Installer options
-LangString DESC_SecPython ${LANG_ENGLISH} "Install python and pip. pip is required to install yotta."
-LangString DESC_SecGCC    ${LANG_ENGLISH} "Install arm-none-eabi-gcc as default compiler. If you have armcc you can use that instead."
-LangString DESC_SecCmake  ${LANG_ENGLISH} "Install Cmake for the build system"
-LangString DESC_SecNinja  ${LANG_ENGLISH} "Install ninja to manage the Cmake system"
-LangString DESC_SecYotta  ${LANG_ENGLISH} "Install yotta, required Python and pip to be installed first"
-LangString DESC_SecGit    ${LANG_ENGLISH} "Install git-scm, you can skip this if you already have git installed."
+LangString DESC_SecPython     ${LANG_ENGLISH} "Install python and pip. pip is required to install yotta."
+LangString DESC_SecGCC        ${LANG_ENGLISH} "Install arm-none-eabi-gcc as default compiler. If you have armcc you can use that instead."
+LangString DESC_SecCmake      ${LANG_ENGLISH} "Install Cmake for the build system"
+LangString DESC_SecNinja      ${LANG_ENGLISH} "Install ninja to manage the Cmake system"
+LangString DESC_SecYotta      ${LANG_ENGLISH} "Install yotta, required Python and pip to be installed first"
+LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
+LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
 LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Install the Windows mbed serial driver. Maker sure you have an mbed board plugged into your computer."
 
 ;--------------------------------
 ;Add descriptions to installer menu
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecPython} $(DESC_SecPython)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecGCC}    $(DESC_SecGCC)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecCmake}  $(DESC_SecCmake)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecNinja}  $(DESC_SecNinja)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecYotta}  $(DESC_SecYotta)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecGit}    $(DESC_SecGit)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecPython}      $(DESC_SecPython)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecGCC}         $(DESC_SecGCC)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecCmake}       $(DESC_SecCmake)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecNinja}       $(DESC_SecNinja)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecYotta}       $(DESC_SecYotta)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecGit}         $(DESC_SecGit)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecMercurial}   $(DESC_SecMercurial)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMbedSerialDriver} $(DESC_SecMbedSerialDriver)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
