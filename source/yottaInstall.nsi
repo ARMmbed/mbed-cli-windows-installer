@@ -41,7 +41,8 @@
   !define CMAKE_INSTALLER   "cmake-3.2.1-win32-x86.exe"
   !define NINJA_INSTALLER   "ninja.exe"
   !define GIT_INSTALLER     "Git-2.5.3-32-bit.exe"
-  !define MBED_SERIAL_DRIVER "mbedWinSerial_16466.exe"
+  !define MERCURIAL_INSTALLER "Mercurial-3.5.1.exe"
+  !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "yotta_install_v${PRODUCT_VERSION}.exe"
@@ -90,11 +91,13 @@ Section "python 2.7.10" SecPython
 SectionEnd
 
 Section "gcc" SecGCC
+  ; --- gcc is an nsis installer ---
   File "..\prerequisites\${GCC_INSTALLER}"
   ExecWait "$INSTDIR\${GCC_INSTALLER} /S /D=$INSTDIR\gcc"
 SectionEnd
 
 Section "cMake" SecCmake
+  ; --- cmake is a nsis installer ---
   File "..\prerequisites\${CMAKE_INSTALLER}"
   ; TODO: get cmake to add itself to the path via command line install options
   ExecWait "$INSTDIR\${CMAKE_INSTALLER} /S /D=$INSTDIR\cmake"
@@ -118,20 +121,22 @@ Section "yotta" SecYotta
 SectionEnd
 
 Section /o "git-scm" SecGit
+  ; --- git-scm is a Inno Setup installer, requires different options
   File "..\prerequisites\${GIT_INSTALLER}"
-  ExecWait "$INSTDIR\${GIT_INSTALLER} /S /D=$INSTDIR\git-scm"
+  ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /DIR=$INSTDIR\git-scm"
 SectionEnd
 
 Section /o "mercurial" SecMercurial
-  File "..\source\pip_install_mercurial.bat"
-  ExecWait "$INSTDIR\pip_install_mercurial.bat" "$INSTDIR"
+ ; --- mercurial is a Inno Setup installer, requires different options
+  File "..\prerequisites\${MERCURIAL_INSTALLER}"
+  ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /DIR=$INSTDIR\mercurial"
 SectionEnd
 
 Section /o "mbed serial driver" SecMbedSerialDriver
   File "..\prerequisites\${MBED_SERIAL_DRIVER}"
   MessageBox MB_OKCANCEL "Installing the mbed Windows serial driver. Please make sure to have a mbed enabled board plugged into your computer." IDOK install_mbed_driver IDCANCEL dont_install_mbed_driver
   install_mbed_driver:
-    Exec "$INSTDIR\${MBED_SERIAL_DRIVER}"
+    ExecWait "$INSTDIR\${MBED_SERIAL_DRIVER}"
     Goto end_mbed_serial_driver
   dont_install_mbed_driver:
     MessageBox MB_OK "If you would like to install the mbed Windows serial driver in the future you can find it at $INSTDIR\${MBED_SERIAL_DRIVER}"
@@ -144,7 +149,7 @@ LangString DESC_SecPython     ${LANG_ENGLISH} "Install python and pip. pip is re
 LangString DESC_SecGCC        ${LANG_ENGLISH} "Install arm-none-eabi-gcc as default compiler. If you have armcc you can use that instead."
 LangString DESC_SecCmake      ${LANG_ENGLISH} "Install Cmake for the build system"
 LangString DESC_SecNinja      ${LANG_ENGLISH} "Install ninja to manage the Cmake system"
-LangString DESC_SecYotta      ${LANG_ENGLISH} "Install yotta, required Python and pip to be installed first"
+LangString DESC_SecYotta      ${LANG_ENGLISH} "Install yotta using pip, requires an internet connection, requires Python and pip to be installed"
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
 LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
 LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Install the Windows mbed serial driver. Maker sure you have an mbed board plugged into your computer."
