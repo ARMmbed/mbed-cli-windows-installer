@@ -19,6 +19,6 @@ set YOTTA_PATH=;%1;%1\gcc\bin;%1\python;%1\python\Scripts;%1\cmake\bin;%1\git-sc
 setx YOTTA_PATH %YOTTA_PATH%
 set PATH=%YOTTA_PATH%;%PATH%
 ::pip install -U pip
-pip install -U yotta
+%1\python\pip.exe install -U yotta
 echo %PATH%
 ::PAUSE
