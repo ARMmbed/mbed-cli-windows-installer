@@ -18,7 +18,14 @@
 set YOTTA_PATH=;%1;%1\gcc\bin;%1\python;%1\python\Scripts;%1\cmake\bin;%1\git-scm\bin;%1\mercurial\bin;
 setx YOTTA_PATH %YOTTA_PATH%
 set PATH=%YOTTA_PATH%;%PATH%
-::pip install -U pip
-%1\python\Scripts\pip.exe install -U yotta
+
+:: install virtual environment
+%1\python\Scripts\pip.exe install virtualenv 
+
+:: create virtual environment
+cd %1
+virtualenv workspace
+source workspace/bin/activate
+pip install -U yotta
 echo %PATH%
 ::PAUSE
