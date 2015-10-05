@@ -15,7 +15,7 @@
 :: limitations under the License.
 ::
 :: Set python\scripts variable because the environment hasnt been updated since python install.
-set YOTTA_PATH=;%1;%1\gcc\bin;%1\python;%1\python\Scripts;%1\cmake\bin;%1\git-scm\bin;%1\mercurial\bin;
+set YOTTA_PATH=;%1;%1\gcc\bin;%1\python;%1\python\Tools\Scripts;%1\python\Scripts;%1\cmake\bin;%1\git-scm\bin;%1\mercurial\bin;
 setx YOTTA_PATH %YOTTA_PATH%
 set PATH=%YOTTA_PATH%;%PATH%
 setx YOTTA_INSTALL_LOCATION %1
@@ -23,10 +23,8 @@ setx YOTTA_INSTALL_LOCATION %1
 :: install virtual environment
 pip install virtualenv 
 
-:: create virtual environment
+:: create virtual environment in \yotta\workspace to sandbox yottta from system.
 cd %1
 virtualenv workspace
-workspace\Scripts\activate.bat
-pip install -U yotta
-echo %PATH%
+cmd /K "%1\workspace\Scripts\activate & pip install -U pip & pip install -U yotta & exit"
 ::PAUSE
