@@ -18,4 +18,5 @@
 rem This file is the script to set path for yotta toolchain
 
 set PATH=%YOTTA_PATH%;%PATH%
-cmd /K "cd %HOMEPATH%"
+:: start yotta venv
+cmd /K "cd %HOMEPATH% & %YOTTA_INSTALL_LOCATION%\workspace\Scripts\activate"
