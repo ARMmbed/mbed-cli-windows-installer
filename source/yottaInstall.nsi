@@ -23,6 +23,9 @@
 ;--------------------------------
 
 ;--------------------------------
+!addplugindir "..\plugins"
+
+;--------------------------------
 ;Include Modern UI
 !include MUI2.nsh
 !define MUI_HEADERIMAGE
@@ -87,7 +90,7 @@ Section "python" SecPython
   File "..\prerequisites\${PYTHON_INSTALLER}"
   ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
   ; This gets python to add itsself to the path.
-  ExecWait '"msiexec" INSTALLDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qb!'
+  ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qb!'
 ;  ExecWait '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qb!'
   ; for logging msiexec /i python-2.7.10.msi /qb /l*v "c:\Program Files\yotta\install.log.txt"
 ;; debug here
@@ -95,18 +98,15 @@ Section "python" SecPython
 SectionEnd
 
 Section "gcc" SecGCC
-  ; --- gcc is an nsis installer ---
-  ;File "..\prerequisites\${GCC_INSTALLER}"
-  ;ExecWait "$INSTDIR\${GCC_INSTALLER} /S /D=$INSTDIR\gcc"
-  nsisunz::Unzip "..\prerequisites\${GCC_ZIP}" "$INSTDIR\gcc"
+  ; --- unzip gcc release ---
+  File "..\prerequisites\${GCC_ZIP}"
+  nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
 SectionEnd
 
 Section "cMake" SecCmake
-  ; --- cmake is a nsis installer ---
-  ;File "..\prerequisites\${CMAKE_INSTALLER}"
-  ; TODO: get cmake to add itself to the path via command line install options
-  ;ExecWait "$INSTDIR\${CMAKE_INSTALLER} /S /D=$INSTDIR\cmake"
-  nsisunz::Unzip "..\prerequisites\${CMAKE_ZIP}" "$INSTDIR\cmake"
+  ; --- unzip cmake release ---
+  File "..\prerequisites\${CMAKE_ZIP}"
+  nsisunz::Unzip "$INSTDIR\${CMAKE_ZIP}" "$INSTDIR"
 SectionEnd
 
 Section "ninja" SecNinja

@@ -13,7 +13,7 @@ The goal of this project is to make yotta install on windows a single step proce
 
 ## How to build installer
 1) [install nsis](http://nsis.sourceforge.net/Download) <br>
-    * install the [Nsisunz](http://nsis.sourceforge.net/Nsisunz_plug-in) plugin to handle unzipping prerequisites <br>
+    * Uses the [Nsisunz](http://nsis.sourceforge.net/Nsisunz_plug-in) plugin to handle unzipping prerequisites <br>
 2) go to `source/yottaInstall.nsi` <br>
 3) right click and select `Compile NSIS Script` (optionally add compression) <br>
 4) thats it, you should have a nice .msi to run on windows (unless you have build errors, then sort those out.)
