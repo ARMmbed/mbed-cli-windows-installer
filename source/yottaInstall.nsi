@@ -38,7 +38,9 @@
   !define PRODUCT_PUBLISHER "ARM®mbed™"
   !define PYTHON_INSTALLER  "python-2.7.10.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
+  !define GCC_ZIP           "gcc-arm-none-eabi-4_9-2015q3-20150921-win32.zip"
   !define CMAKE_INSTALLER   "cmake-3.2.1-win32-x86.exe"
+  !define CMAKE_ZIP         "cmake-3.4.0-rc3-win32-x86.zip"
   !define NINJA_INSTALLER   "ninja.exe"
   !define GIT_INSTALLER     "Git-2.5.3-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-3.5.1.exe"
@@ -94,15 +96,17 @@ SectionEnd
 
 Section "gcc" SecGCC
   ; --- gcc is an nsis installer ---
-  File "..\prerequisites\${GCC_INSTALLER}"
-  ExecWait "$INSTDIR\${GCC_INSTALLER} /S /D=$INSTDIR\gcc"
+  ;File "..\prerequisites\${GCC_INSTALLER}"
+  ;ExecWait "$INSTDIR\${GCC_INSTALLER} /S /D=$INSTDIR\gcc"
+  nsisunz::Unzip "..\prerequisites\${GCC_ZIP}" "$INSTDIR\gcc"
 SectionEnd
 
 Section "cMake" SecCmake
   ; --- cmake is a nsis installer ---
-  File "..\prerequisites\${CMAKE_INSTALLER}"
+  ;File "..\prerequisites\${CMAKE_INSTALLER}"
   ; TODO: get cmake to add itself to the path via command line install options
-  ExecWait "$INSTDIR\${CMAKE_INSTALLER} /S /D=$INSTDIR\cmake"
+  ;ExecWait "$INSTDIR\${CMAKE_INSTALLER} /S /D=$INSTDIR\cmake"
+  nsisunz::Unzip "..\prerequisites\${CMAKE_ZIP}" "$INSTDIR\cmake"
 SectionEnd
 
 Section "ninja" SecNinja
