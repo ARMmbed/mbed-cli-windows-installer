@@ -36,7 +36,7 @@
 
 ;--------------------------------
 ;Config Section
-  !define PRODUCT_NAME      "yotta"
+  !define PRODUCT_NAME      "yotta windows installer"
   !define PRODUCT_VERSION   "0.2.0"
   !define PRODUCT_PUBLISHER "ARM®mbed™"
   !define PYTHON_INSTALLER  "python-2.7.10.msi"
@@ -57,7 +57,7 @@
 ;--------------------------------
 ;Pages
 !define MUI_ABORTWARNING
-!define MUI_WELCOMEPAGE_TITLE 'yotta - it means build awesome'
+!define MUI_WELCOMEPAGE_TITLE 'Install yotta'
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\source\license.txt"
 !insertmacro MUI_PAGE_DIRECTORY
