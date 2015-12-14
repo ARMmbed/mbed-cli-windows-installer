@@ -158,7 +158,7 @@ LangString DESC_SecNinja      ${LANG_ENGLISH} "Install ninja to manage the Cmake
 LangString DESC_SecYotta      ${LANG_ENGLISH} "Install yotta using pip, requires an internet connection, requires Python and pip to be installed"
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
 LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
-LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Install the Windows mbed serial driver. Maker sure you have an mbed board plugged into your computer."
+LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Install the Windows mbed serial driver. Make sure you have an mbed board plugged into your computer."
 
 ;--------------------------------
 ;Add descriptions to installer menu
