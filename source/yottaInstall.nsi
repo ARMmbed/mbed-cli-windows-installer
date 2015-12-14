@@ -38,7 +38,7 @@
 ;Config Section
   !define PRODUCT_NAME      "yotta windows installer"
   !define PRODUCT_VERSION   "0.2.0"
-  !define PRODUCT_PUBLISHER "ARM®mbed™"
+  !define PRODUCT_PUBLISHER "ARMmbed"
   !define PYTHON_INSTALLER  "python-2.7.10.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
   !define GCC_ZIP           "gcc-arm-none-eabi-4_9-2015q3-20150921-win32.zip"
