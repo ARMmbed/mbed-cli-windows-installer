@@ -80,6 +80,7 @@ BrandingText "next gen build system from ${PRODUCT_PUBLISHER}"
 Section -SETTINGS
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
+  writeUninstaller "$INSTDIR\yotta_uninstall.exe"
 SectionEnd
 
 ;--------------------------------
@@ -155,6 +156,17 @@ Section /o "mbed serial driver" SecMbedSerialDriver
   dont_install_mbed_driver:
     MessageBox MB_OK "If you would like to install the mbed Windows serial driver in the future you can find it at $INSTDIR\${MBED_SERIAL_DRIVER}"
   end_mbed_serial_driver:
+SectionEnd
+
+Section "Uninstall"
+  File "..\source\uninstall.bat"
+  MessageBox MB_OKCANCEL "Uninstalling yotta will also remove your yotta workspace (c:\yotta\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing yotta?" IDOK uninstallOK IDCANCEL uninstallCancel 
+  uninstallOk:
+    Delete "$DESKTOP\Run Yotta.lnk"                ;delete desktop shortcut
+    Delete "$SMPROGRAMS\Run Yotta.lnk"             ;delete startmenu shortcut
+    ExecWait '"$INSTDIR\uninstall.bat"'                  ;delete c:\yotta folder and remove environment variables
+  uninstallCancel:
+    Return
 SectionEnd
 
 ;--------------------------------
