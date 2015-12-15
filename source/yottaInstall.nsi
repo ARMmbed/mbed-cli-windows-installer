@@ -87,6 +87,13 @@ SectionEnd
 
 Section "python" SecPython
   SetOutPath $INSTDIR
+  
+  ExecWait "python --version" $0
+  ${if} $0 == 0
+    MessageBox MB_OKCANCEL "Python is already installed on this system, would you like to overwrite this installation?" IDOK pythonCont IDCANCEL pythonCancel
+  pythonCancel:
+    Return
+  pythonCont:
   File "..\prerequisites\${PYTHON_INSTALLER}"
   ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
   ; This gets python to add itsself to the path.
@@ -95,6 +102,7 @@ Section "python" SecPython
   ; for logging msiexec /i python-2.7.10.msi /qb /l*v "c:\Program Files\yotta\install.log.txt"
 ;; debug here
 ;ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" /qn /l*v "C:\yotta\pythonlog.txt"'
+  ${endif}
 SectionEnd
 
 Section "gcc" SecGCC
