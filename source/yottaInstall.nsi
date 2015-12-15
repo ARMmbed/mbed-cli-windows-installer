@@ -164,7 +164,9 @@ Section "Uninstall"
   uninstallOk:
     Delete "$DESKTOP\Run Yotta.lnk"                ;delete desktop shortcut
     Delete "$SMPROGRAMS\Run Yotta.lnk"             ;delete startmenu shortcut
-    ExecWait '"$INSTDIR\uninstall.bat"'                  ;delete c:\yotta folder and remove environment variables
+    ExecWait '"$INSTDIR\uninstall.bat"'            ;delete c:\yotta folder 
+    ExecWait 'setx YOTTA_PATH ""'                  ;remove environment variables
+    ExecWait 'setx YOTTA_INSTALL_LOCATION ""'
   uninstallCancel:
     Return
 SectionEnd

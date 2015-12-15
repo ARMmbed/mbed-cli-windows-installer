@@ -15,8 +15,6 @@
 :: limitations under the License.
 ::
 @echo off
-rem This is a script to uninstall yotta and its settings. Delete c:\yotta folder and environment settings
+rem This is a script to uninstall yotta and its settings. Delete c:\yotta folder
 
 rmdir %YOTTA_INSTALL_LOCATION% /s /q
-setx YOTTA_PATH ''
-setx YOTTA_INSTALL_LOCATION ''
