@@ -160,7 +160,6 @@ Section /o "mbed serial driver" SecMbedSerialDriver
 SectionEnd
 
 Section "Uninstall"
-  File "..\source\uninstall.bat"
   MessageBox MB_OKCANCEL "Uninstalling yotta will also remove your yotta workspace (c:\yotta\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing yotta?" IDOK uninstallOK IDCANCEL uninstallCancel 
   uninstallOk:
     Delete "$DESKTOP\Run Yotta.lnk"                ;delete desktop shortcut
