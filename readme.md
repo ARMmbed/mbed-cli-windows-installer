@@ -19,8 +19,13 @@ The goal of this project is to make yotta install on windows a single step proce
 4) thats it, you should have a nice .msi to run on windows (unless you have build errors, then sort those out.)
 
 ## Using yotta_install_vX.x.x
-Run the `yotta_installer_vX.X.X.msi` file, click through with default settings, then open Run_yotta.bat (on the dekstop or in the start menu), use yotta!
-Note: on fresh windows systems you will need to open explorer before installing to update your ssl certificates, otherwise you may not be able to download all dependencies properly from pip, resulting in a botched yotta install.
+Download the [latest release of the yotta windows installer](https://github.com/ARMmbed/yotta_windows_installer/releases/latest). Run the `yotta_installer_vX.X.X.exe` file, click through with default settings, then open Run_yotta.bat (on the dekstop or in the start menu), use yotta!
+
+*QuickFix #1*: on fresh windows systems you will need to open explorer before installing to update your ssl certificates, otherwise you may not be able to download all dependencies properly from pip, resulting in a botched yotta install.
+
+*QuickFix #2*: If you yotta install has issues please try re-installing with admin permissions. If that fails please [submit an issue](https://github.com/armmbed/yotta_windows_installer/issues) with details on your OS version, and a a listing of what files are in the `c:\yotta\` folder. 
+
+*QuickFix #3*: If all else fails follow the [manual install instructions](http://yottadocs.mbed.com/#installing-on-windows).
 
 ## Updating pre-requisites
 When needed, you can update the gcc, cmake, or other dependencies by updating the executables in `/prerequisites/*` and then the equivalent lines in the `Config Section` of `/source/yottaInstall.nsi` .
