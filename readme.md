@@ -1,6 +1,6 @@
 # mbed CLI Windows Installer
 
-This repository contains the source files to build the mbed CLI Windows installer. See the [releases page](https://github.com/ARMmbed/mbed-cli_windows_installer/releases/latest) for downloads.
+This repository contains the source files to build the mbed CLI Windows installer. See the [releases page](https://github.com/ARMmbed/mbed-cli-windows-installer/releases/latest) for downloads.
 
 ## Setup
 
@@ -18,14 +18,14 @@ This repository contains the source files to build the mbed CLI Windows installe
 
 ## Using mbed_install_vX.x.x
 
-1. Download the [latest release of the mbed CLI Windows installer](https://github.com/ARMmbed/mbed-cli_windows_installer/releases/latest). 
+1. Download the [latest release of the mbed CLI Windows installer](https://github.com/ARMmbed/mbed-cli-windows-installer/releases/latest). 
 1. Run `mbed_installer_vX.X.X.exe` - and click through the wizard.
 1. Click the 'Run mbed CLI' icon on your desktop or from the start menu.
 1. A command prompt opens which has mbed CLI instantiated. Use `mbed import mbed-os-example-blinky` to import an example program.
 
 **Note on fresh Windows systems:** When installing mbed CLI on a fresh Windows machine, you will need to open Windows Explorer once to upgrade your SSL certificates. If you fail to do so, pip - the Python package manager - cannot install dependencies properly.
 
-**Note when you experience issues:** If you experience issues using mbed CLI, try re-installing with administrator permissions. If you still run into problems,  please [submit an issue](https://github.com/armmbed/mbed-cli_windows_installer/issues) with details on your OS version, and a a listing of what files are in the `c:\mbed-cli\` folder. 
+**Note when you experience issues:** If you experience issues using mbed CLI, try re-installing with administrator permissions. If you still run into problems,  please [submit an issue](https://github.com/armmbed/mbed-cli-windows-installer/issues) with details on your OS version, and a a listing of what files are in the `c:\mbed-cli\` folder. 
 
 **Manual installation:** You can install mbed CLI also by hand. See the [mbed CLI repository](https://github.com/ARMmbed/mbed-cli#installing-mbed-cli).
 
