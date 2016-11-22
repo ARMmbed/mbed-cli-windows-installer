@@ -35,6 +35,14 @@
 !define MUI_ICON p.ico
 
 ;--------------------------------
+;Init
+function un.onInit
+  MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace (c:\mbed-cli\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK next
+    Abort
+  next:
+functionEnd
+
+;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI windows installer"
   !define PRODUCT_VERSION   "0.3.0"
@@ -45,6 +53,7 @@
   !define GIT_INSTALLER     "Git-2.5.3-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-3.5.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
+  !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "mbed_install_v${PRODUCT_VERSION}.exe"
@@ -77,6 +86,10 @@ BrandingText "next gen build system from ${PRODUCT_PUBLISHER}"
 Section -SETTINGS
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${PRODUCT_NAME}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
+    "$\"$INSTDIR\mbed_uninstall.exe$\""
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\p.ico"
   writeUninstaller "$INSTDIR\mbed_uninstall.exe"
 SectionEnd
 
@@ -85,8 +98,9 @@ SectionEnd
 
 Section "python" SecPython
   SetOutPath $INSTDIR
-  
-  ExecWait "python --version" $0
+  ;Check if python is installed
+  nsExec::ExecToStack 'python --version'
+  Pop $0
   ${if} $0 == 0
     MessageBox MB_OKCANCEL "Python is already installed on this system, would you like to overwrite this installation?" IDOK pythonCont IDCANCEL pythonCancel
   pythonCancel:
@@ -96,7 +110,7 @@ Section "python" SecPython
   File "..\prerequisites\${PYTHON_INSTALLER}"
   ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
   ; This gets python to add itsself to the path.
-  ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qb!'
+  nsExec::ExecToStack '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /q'
 ;  ExecWait '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qb!'
   ; for logging msiexec /i python-2.7.10.msi /qb /l*v "c:\mbed-cli\install.log.txt"
 ;; debug here
@@ -113,7 +127,7 @@ SectionEnd
 Section "mbed" SecMbed
   ; --- install mbed CLI ---
   File "..\source\pip_install_mbed.bat"
-  ExecWait '"$INSTDIR\pip_install_mbed.bat" "$INSTDIR"'
+  nsExec::ExecToStack '"$INSTDIR\pip_install_mbed.bat" "$INSTDIR"'
   ; --- add shortcut and batch script to windows ---
   File "..\source\run_mbed.bat"
   File "..\source\p.ico"
@@ -145,15 +159,12 @@ Section "mbed serial driver" SecMbedSerialDriver
 SectionEnd
 
 Section "Uninstall"
-  MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace (c:\mbed-cli\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK uninstallOK IDCANCEL uninstallCancel 
-  uninstallOk:
-    Delete "$DESKTOP\Run mbed CLI.lnk"                ;delete desktop shortcut
-    Delete "$SMPROGRAMS\Run mbed CLI.lnk"             ;delete startmenu shortcut
-    RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder 
-    ExecWait 'setx MBED_PATH ""'                      ;remove environment variables
-    ExecWait 'setx MBED_INSTALL_LOCATION ""'
-  uninstallCancel:
-    Return
+  Delete "$DESKTOP\Run mbed CLI.lnk"                ;delete desktop shortcut
+  Delete "$SMPROGRAMS\Run mbed CLI.lnk"             ;delete startmenu shortcut
+  RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder 
+  nsExec::ExecToStack 'setx MBED_PATH ""'                      ;remove environment variables
+  nsExec::ExecToStack 'setx MBED_INSTALL_LOCATION ""'
+  DeleteRegKey SHCTX "${UNINST_KEY}"
 SectionEnd
 
 ;--------------------------------
