@@ -45,7 +45,7 @@ functionEnd
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI windows installer"
-  !define PRODUCT_VERSION   "0.3.0"
+  !define PRODUCT_VERSION   "0.3.1"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.10.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
@@ -87,9 +87,13 @@ Section -SETTINGS
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${PRODUCT_NAME}"
-  WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
-    "$\"$INSTDIR\mbed_uninstall.exe$\""
+  WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\mbed_uninstall.exe$\""
+  WriteRegDWORD SHCTX "${UNINST_KEY}" "NoModify" "1"
+  WriteRegDWORD SHCTX "${UNINST_KEY}" "NoRepair" "1"
   WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\p.ico"
+  WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "InstallLocation" "$\"$INSTDIR$\""
   writeUninstaller "$INSTDIR\mbed_uninstall.exe"
 SectionEnd
 
@@ -97,6 +101,7 @@ SectionEnd
 ;Installer Sections
 
 Section "python" SecPython
+  SectionIn RO
   SetOutPath $INSTDIR
   ;Check if python is installed
   nsExec::ExecToStack 'python --version'
@@ -118,14 +123,9 @@ Section "python" SecPython
   
 SectionEnd
 
-Section "gcc" SecGCC
-  ; --- unzip gcc release ---
-  File "..\prerequisites\${GCC_ZIP}"
-  nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
-SectionEnd
-
 Section "mbed" SecMbed
   ; --- install mbed CLI ---
+  SectionIn RO
   File "..\source\pip_install_mbed.bat"
   nsExec::ExecToStack '"$INSTDIR\pip_install_mbed.bat" "$INSTDIR"'
   ; --- add shortcut and batch script to windows ---
@@ -137,14 +137,32 @@ SectionEnd
 
 Section "git-scm" SecGit
   ; --- git-scm is a Inno Setup installer, requires different options
-  File "..\prerequisites\${GIT_INSTALLER}"
-  ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /DIR=$INSTDIR\git-scm"
+  SectionIn RO
+  ;Check if git is installed
+  nsExec::ExecToStack 'git --version'
+  Pop $0
+  ${if} $0 != 0
+	File "..\prerequisites\${GIT_INSTALLER}"
+	ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$PROGRAMFILES"
+  ${endif}
 SectionEnd
 
 Section "mercurial" SecMercurial
- ; --- mercurial is a Inno Setup installer, requires different options
-  File "..\prerequisites\${MERCURIAL_INSTALLER}"
-  ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /DIR=$INSTDIR\mercurial"
+  ; --- mercurial is a Inno Setup installer, requires different options
+  SectionIn RO
+  ;Check if mercurial is installed
+  nsExec::ExecToStack 'hg --version'
+  Pop $0
+  ${if} $0 != 0
+	File "..\prerequisites\${MERCURIAL_INSTALLER}"
+	ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$PROGRAMFILES"
+  ${endif}
+SectionEnd
+
+Section "gcc" SecGCC
+  ; --- unzip gcc release ---
+  File "..\prerequisites\${GCC_ZIP}"
+  nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
 SectionEnd
 
 Section "mbed serial driver" SecMbedSerialDriver
