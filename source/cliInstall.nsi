@@ -143,7 +143,7 @@ Section "git-scm" SecGit
   Pop $0
   ${if} $0 != 0
 	File "..\prerequisites\${GIT_INSTALLER}"
-	ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$PROGRAMFILES"
+	ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$PROGRAMFILES32"
   ${endif}
 SectionEnd
 
@@ -155,7 +155,7 @@ Section "mercurial" SecMercurial
   Pop $0
   ${if} $0 != 0
 	File "..\prerequisites\${MERCURIAL_INSTALLER}"
-	ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$PROGRAMFILES"
+	ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
   ${endif}
 SectionEnd
 
