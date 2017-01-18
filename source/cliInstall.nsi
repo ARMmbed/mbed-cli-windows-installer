@@ -45,7 +45,7 @@ functionEnd
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI windows installer"
-  !define PRODUCT_VERSION   "0.3.1"
+  !define PRODUCT_VERSION   "0.3.2"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.10.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
