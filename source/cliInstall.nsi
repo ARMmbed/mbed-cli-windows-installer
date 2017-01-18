@@ -50,7 +50,7 @@ functionEnd
   !define PYTHON_INSTALLER  "python-2.7.10.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
   !define GCC_ZIP           "gcc-arm-none-eabi-4_9-2015q3-20150921-win32.zip"
-  !define GIT_INSTALLER     "Git-2.5.3-32-bit.exe"
+  !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-3.5.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
@@ -143,7 +143,7 @@ Section "git-scm" SecGit
   Pop $0
   ${if} $0 != 0
 	File "..\prerequisites\${GIT_INSTALLER}"
-	ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$PROGRAMFILES32"
+	ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
   ${endif}
 SectionEnd
 
