@@ -27,7 +27,7 @@ setx MBED_INSTALL_LOCATION %ytlocation%
 :: install virtual environment
 pip install virtualenv 
 
-:: create virtual environment in \mbed-cli\workspace to sandbox yottta from system.
+:: create virtual environment in \mbed-cli\workspace to sandbox mbed-cli from system.
 cd %1
 virtualenv --system-site-packages workspace
-cmd /K "%1\workspace\Scripts\activate & pip install -I -U pip & pip install -I -U mbed-cli & exit"
+cmd /K "%1\workspace\Scripts\activate & pip install -I -U pip & pip install -I -U mbed-cli==%2 & exit"
