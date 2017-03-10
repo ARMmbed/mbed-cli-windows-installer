@@ -45,7 +45,7 @@ Please see the LICENSE file for details.
 
 =====================================================================
 
-Python 2.7.10
+Python 2.7.13
 See: https://docs.python.org/2/license.html
 
 PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2

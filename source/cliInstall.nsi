@@ -26,8 +26,12 @@
 !addplugindir "..\plugins"
 
 ;--------------------------------
-;Include Modern UI
+;include Modern UI
 !include MUI2.nsh
+!include "WordFunc.nsh"
+  !insertmacro VersionCompare
+!include "Sections.nsh"
+
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "..\source\HeaderImage_Bitmap.bmp" ; recommended size: 150x57 pixels
 !define MUI_WELCOMEFINISHPAGE_BITMAP "..\source\WelcomeScreen.bmp" ;recommended size: 164x314 pixels
@@ -35,7 +39,7 @@
 !define MUI_ICON p.ico
 
 ;--------------------------------
-;Init
+;un Init
 function un.onInit
   MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace (c:\mbed-cli\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK next
     Abort
@@ -48,13 +52,16 @@ functionEnd
   !define PRODUCT_VERSION   "0.3.3"
   !define MBED_CLI_VERSION   "1.0.0"
   !define PRODUCT_PUBLISHER "ARM mbed"
-  !define PYTHON_INSTALLER  "python-2.7.10.msi"
+  !define PYTHON_INSTALLER  "python-2.7.13.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
   !define GCC_ZIP           "gcc-arm-none-eabi-4_9-2015q3-20150921-win32.zip"
   !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-3.5.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
+  !define MIN_PYTHON2_VERSION "2.7.12"
+  !define MIN_GIT_VERSION "1.9.5"
+  !define MIN_MERCURIAL_VERSION "2.2.2"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "mbed_installer_v${PRODUCT_VERSION}_cli_v${MBED_CLI_VERSION}.exe"
@@ -99,13 +106,20 @@ Section -SETTINGS
 SectionEnd
 
 ;--------------------------------
+;Installer Types
+
+InstType /CUSTOMSTRING=Advanced
+InstType /COMPONENTSONLYONCUSTOM
+InstType "Default"
+
+;--------------------------------
 ;Installer Sections
 
 Section "python" SecPython
-  SectionIn RO
+  SectionIn 1
   SetOutPath $INSTDIR
   ;Check if python is installed
-  nsExec::ExecToStack 'python --version'
+  nsExec::ExecToStack 'python2 --version'
   Pop $0
   ${if} $0 == 0
     MessageBox MB_OKCANCEL "Python is already installed on this system, would you like to overwrite this installation?" IDOK pythonCont IDCANCEL pythonCancel
@@ -118,15 +132,15 @@ Section "python" SecPython
   ; This gets python to add itsself to the path.
   nsExec::ExecToStack '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qn'
 ;  ExecWait '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qb!'
-  ; for logging msiexec /i python-2.7.10.msi /qb /l*v "c:\mbed-cli\install.log.txt"
+  ; for logging msiexec /i python-2.7.11.msi /qb /l*v "c:\mbed-cli\install.log.txt"
 ;; debug here
 ;ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" /qn /l*v "C:\mbed-cli\pythonlog.txt"'
   
 SectionEnd
 
 Section "mbed" SecMbed
+  SectionIn 1
   ; --- install mbed CLI ---
-  SectionIn RO
   File "..\source\pip_install_mbed.bat"
   nsExec::ExecToStack '"$INSTDIR\pip_install_mbed.bat" "$INSTDIR" "${MBED_CLI_VERSION}"'
   ; --- add shortcut and batch script to windows ---
@@ -137,8 +151,8 @@ Section "mbed" SecMbed
 SectionEnd
 
 Section "git-scm" SecGit
+  SectionIn 1
   ; --- git-scm is a Inno Setup installer, requires different options
-  SectionIn RO
   ;Check if git is installed
   nsExec::ExecToStack 'git --version'
   Pop $0
@@ -149,8 +163,8 @@ Section "git-scm" SecGit
 SectionEnd
 
 Section "mercurial" SecMercurial
+  SectionIn 1
   ; --- mercurial is a Inno Setup installer, requires different options
-  SectionIn RO
   ;Check if mercurial is installed
   nsExec::ExecToStack 'hg --version'
   Pop $0
@@ -161,12 +175,14 @@ Section "mercurial" SecMercurial
 SectionEnd
 
 Section "gcc" SecGCC
+  SectionIn 1
   ; --- unzip gcc release ---
   File "..\prerequisites\${GCC_ZIP}"
   nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
 SectionEnd
 
 Section "mbed serial driver" SecMbedSerialDriver
+  SectionIn 1
   File "..\prerequisites\${MBED_SERIAL_DRIVER}"
   MessageBox MB_OKCANCEL "Installing the mbed Windows serial driver. Please make sure to have a mbed enabled board plugged into your computer." IDOK install_mbed_driver IDCANCEL dont_install_mbed_driver
   install_mbed_driver:
@@ -177,7 +193,24 @@ Section "mbed serial driver" SecMbedSerialDriver
   end_mbed_serial_driver:
 SectionEnd
 
+Section "windows bash" SecWindowsBash
+  SectionIn 1
+  File "mbed"
+  CopyFiles $INSTDIR\mbed $LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed
+SectionEnd
+
+;--------------------------------
+;Init
+Function .onInit
+   ${if} ${FileExists} "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\*"
+   ${else}
+      !insertmacro UnselectSection ${SecWindowsBash}
+      SectionSetText ${SecWindowsBash} ""
+   ${endif}
+functionEnd
+
 Section "Uninstall"
+  Delete "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed"
   Delete "$DESKTOP\Run mbed CLI.lnk"                ;delete desktop shortcut
   Delete "$SMPROGRAMS\Run mbed CLI.lnk"             ;delete startmenu shortcut
   RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder 
@@ -194,6 +227,7 @@ LangString DESC_SecMbed       ${LANG_ENGLISH} "Install mbed CLI using pip, requi
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
 LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
 LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Install the Windows mbed serial driver. Make sure you have an mbed board plugged into your computer."
+LangString DESC_SecWindowsBash  ${LANG_ENGLISH} "Install windows Bash shell."
 
 ;--------------------------------
 ;Add descriptions to installer menu
@@ -204,4 +238,5 @@ LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Install the Windows mbed se
   !insertmacro MUI_DESCRIPTION_TEXT ${SecGit}         $(DESC_SecGit)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMercurial}   $(DESC_SecMercurial)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMbedSerialDriver} $(DESC_SecMbedSerialDriver)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecWindowsBash} $(DESC_SecWindowsBash)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END

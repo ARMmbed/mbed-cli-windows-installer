@@ -15,8 +15,8 @@
 :: limitations under the License.
 ::
 @echo off
-rem This file is the script to set path for yotta toolchain
+rem This file is the script to set path for mbed-cli toolchain
 
 set PATH=%MBED_PATH%;%PATH%
-:: start yotta venv
+:: start mbed-cli venv
 cmd /K "cd %HOMEPATH% & %MBED_INSTALL_LOCATION%\workspace\Scripts\activate"
