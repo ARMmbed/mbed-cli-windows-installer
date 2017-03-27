@@ -15,7 +15,7 @@
 :: limitations under the License.
 ::
 :: Set python\scripts variable because the environment hasnt been updated since python install.
-set MBED_PATH=;%1;%1\gcc\bin;%1\python;%1\python\Scripts;%1\cmake-3.4.0-rc3-win32-x86\bin;%1\git-scm\bin;%1\mercurial\bin;
+set MBED_PATH=%1;%1\gcc\bin;%HOMEDRIVE%\python27;%HOMEDRIVE%\python27\Scripts;%HOMEDRIVE%\python27\Tools\Scripts;%1\cmake-3.4.0-rc3-win32-x86\bin;%programfiles(x86)%\Git\bin;%programfiles(x86)%\Mercurial;
 setx MBED_PATH %MBED_PATH%
 set PATH=%MBED_PATH%;%PATH%
 
@@ -23,6 +23,9 @@ set PATH=%MBED_PATH%;%PATH%
 set ytlocation=%1
 set ytlocation=%ytlocation: =^ %
 setx MBED_INSTALL_LOCATION %ytlocation%
+
+:: ensure that pip is installed
+python -m ensurepip
 
 :: install virtual environment
 pip install virtualenv 

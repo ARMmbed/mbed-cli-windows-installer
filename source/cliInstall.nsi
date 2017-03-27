@@ -28,27 +28,23 @@
 ;--------------------------------
 ;include Modern UI
 !include MUI2.nsh
+!include "StrFunc.nsh"
+${StrRep}
+${StrTrimNewLines}
 !include "WordFunc.nsh"
   !insertmacro VersionCompare
 !include "Sections.nsh"
+!include WinVer.nsh
 
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "..\source\HeaderImage_Bitmap.bmp" ; recommended size: 150x57 pixels
 !define MUI_WELCOMEFINISHPAGE_BITMAP "..\source\WelcomeScreen.bmp" ;recommended size: 164x314 pixels
-;!define MUI_WELCOMEFINISHPAGE_BITMAP_NOSTRETCH
 !define MUI_ICON p.ico
-
-;--------------------------------
-;un Init
-function un.onInit
-  MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace (c:\mbed-cli\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK next
-    Abort
-  next:
-functionEnd
 
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI windows installer"
+  !define REG_PRODUCT_NAME  "mbed CLI"
   !define PRODUCT_VERSION   "0.3.3"
   !define MBED_CLI_VERSION   "1.0.0"
   !define PRODUCT_PUBLISHER "ARM mbed"
@@ -59,9 +55,9 @@ functionEnd
   !define MERCURIAL_INSTALLER "Mercurial-3.5.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
-  !define MIN_PYTHON2_VERSION "2.7.12"
   !define MIN_GIT_VERSION "1.9.5"
   !define MIN_MERCURIAL_VERSION "2.2.2"
+  !define MIN_PYTHON_VERSION "2.7.12"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "mbed_installer_v${PRODUCT_VERSION}_cli_v${MBED_CLI_VERSION}.exe"
@@ -84,9 +80,6 @@ functionEnd
 ;Branding
 BrandingText "next gen build system from ${PRODUCT_PUBLISHER}"
 
-;!define MUI_WELCOMEFINISHPAGE_BITMAP "mbed-enabled-logo.bmp"
-;BGGradient 00699d 0079b4  cc2020
-
 ;--------------------------------
 ;Languages
 !insertmacro MUI_LANGUAGE "English"
@@ -94,7 +87,7 @@ BrandingText "next gen build system from ${PRODUCT_PUBLISHER}"
 Section -SETTINGS
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${PRODUCT_NAME}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${REG_PRODUCT_NAME}"
   WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\mbed_uninstall.exe$\""
   WriteRegDWORD SHCTX "${UNINST_KEY}" "NoModify" "1"
   WriteRegDWORD SHCTX "${UNINST_KEY}" "NoRepair" "1"
@@ -118,24 +111,34 @@ InstType "Default"
 Section "python" SecPython
   SectionIn 1
   SetOutPath $INSTDIR
-  ;Check if python is installed
-  nsExec::ExecToStack 'python2 --version'
-  Pop $0
-  ${if} $0 == 0
-    MessageBox MB_OKCANCEL "Python is already installed on this system, would you like to overwrite this installation?" IDOK pythonCont IDCANCEL pythonCancel
-  pythonCancel:
-    Return
-  pythonCont:
-  ${endif}
-  File "..\prerequisites\${PYTHON_INSTALLER}"
-  ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
-  ; This gets python to add itsself to the path.
-  nsExec::ExecToStack '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qn'
-;  ExecWait '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ADDLOCAL=ALL /qb!'
-  ; for logging msiexec /i python-2.7.11.msi /qb /l*v "c:\mbed-cli\install.log.txt"
-;; debug here
-;ExecWait '"msiexec" TARGETDIR="$INSTDIR\python" /i "$INSTDIR\${PYTHON_INSTALLER}" /qn /l*v "C:\mbed-cli\pythonlog.txt"'
-  
+  ClearErrors
+  EnumRegKey $0 HKLM "SOFTWARE\Python\PythonCore\2.7" 0
+  ${If} ${Errors}
+    Goto pythonInstall
+  ${Else}
+    nsExec::ExecToStack 'python2 --version'
+    Pop $0
+    Pop $1
+    ${if} $0 != 0
+      goto pythonInstall
+    ${EndIf}
+    ;get python 2 version
+    ${StrRep} $0 $1 "Python " ""
+    ${StrTrimNewLines} $0 $0
+    ;compare version
+    ${VersionCompare} $0  ${MIN_PYTHON_VERSION} $1
+    ${if} $1 == 2
+      MessageBox MB_YESNO "${REG_PRODUCT_NAME} requires Python version ${MIN_PYTHON_VERSION} or higher to work properly (Python 3 is not supported). Python $0 is already installed on this system, would you like to overwrite this installation?" IDYES pythonInstall IDNO pythonExit
+    ${Else}
+      goto pythonExit
+    ${endif}
+  ${EndIf}
+  pythonInstall:
+    File "..\prerequisites\${PYTHON_INSTALLER}"
+    ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
+    ; This gets python to add itsself to the path.
+    nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qb!'
+  pythonExit:
 SectionEnd
 
 Section "mbed" SecMbed
@@ -194,30 +197,47 @@ Section "mbed serial driver" SecMbedSerialDriver
 SectionEnd
 
 Section "windows bash" SecWindowsBash
-  SectionIn 1
   File "mbed"
   CopyFiles $INSTDIR\mbed $LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed
 SectionEnd
 
 ;--------------------------------
-;Init
-Function .onInit
-   ${if} ${FileExists} "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\*"
-   ${else}
-      !insertmacro UnselectSection ${SecWindowsBash}
-      SectionSetText ${SecWindowsBash} ""
-   ${endif}
-functionEnd
 
 Section "Uninstall"
   Delete "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed"
   Delete "$DESKTOP\Run mbed CLI.lnk"                ;delete desktop shortcut
   Delete "$SMPROGRAMS\Run mbed CLI.lnk"             ;delete startmenu shortcut
   RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder 
-  nsExec::ExecToStack 'setx MBED_PATH ""'                      ;remove environment variables
+  nsExec::ExecToStack 'setx MBED_PATH ""'           ;remove environment variables
+  nsExec::ExecToStack 'reg delete HKCU\Environment /F /V MBED_PATH'
   nsExec::ExecToStack 'setx MBED_INSTALL_LOCATION ""'
+  nsExec::ExecToStack 'reg delete HKCU\Environment /F /V MBED_INSTALL_LOCATION'
   DeleteRegKey SHCTX "${UNINST_KEY}"
 SectionEnd
+
+;--------------------------------
+;Init
+Function .onInit
+   ;Check Windows version. Windows 7 or above is required
+   ${IfNot} ${AtLeastWin7}
+     MessageBox MB_OK "Windows 7 and above is required"
+     Quit
+   ${EndIf}
+   ;Check if bash in Windows 10 is installed
+   ${IfNot} ${FileExists} "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\*"
+     ;Hide bash code completion section
+     !insertmacro UnselectSection ${SecWindowsBash}
+     SectionSetText ${SecWindowsBash} ""
+   ${endif}
+functionEnd
+
+;--------------------------------
+;un Init
+function un.onInit
+  MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace (c:\mbed-cli\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK next
+    Abort
+  next:
+functionEnd
 
 ;--------------------------------
 ;Descriptions of Installer options
@@ -226,7 +246,7 @@ LangString DESC_SecGCC        ${LANG_ENGLISH} "Install arm-none-eabi-gcc as defa
 LangString DESC_SecMbed       ${LANG_ENGLISH} "Install mbed CLI using pip, requires an internet connection, requires Python and pip to be installed"
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
 LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
-LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Install the Windows mbed serial driver. Make sure you have an mbed board plugged into your computer."
+LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Installing Windows mbed serial driver requires an mbed board. Make sure you have an mbed board plugged into your computer."
 LangString DESC_SecWindowsBash  ${LANG_ENGLISH} "Install windows Bash shell."
 
 ;--------------------------------
