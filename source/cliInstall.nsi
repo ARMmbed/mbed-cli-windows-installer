@@ -45,8 +45,7 @@ ${StrTrimNewLines}
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI windows installer"
   !define REG_PRODUCT_NAME  "mbed CLI"
-  !define PRODUCT_VERSION   "0.3.3"
-  !define MBED_CLI_VERSION   "1.0.0"
+  !define PRODUCT_VERSION   "0.3.4"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
   !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
@@ -60,7 +59,7 @@ ${StrTrimNewLines}
   !define MIN_PYTHON_VERSION "2.7.12"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-  OutFile "mbed_installer_v${PRODUCT_VERSION}_cli_v${MBED_CLI_VERSION}.exe"
+  OutFile "mbed_installer_v${PRODUCT_VERSION}.exe"
   InstallDir "C:\mbed-cli"
   ShowInstDetails show
 
@@ -116,7 +115,7 @@ Section "python" SecPython
   ${If} ${Errors}
     Goto pythonInstall
   ${Else}
-    nsExec::ExecToStack 'python2 --version'
+    nsExec::ExecToStack 'python --version'
     Pop $0
     Pop $1
     ${if} $0 != 0
@@ -144,8 +143,9 @@ SectionEnd
 Section "mbed" SecMbed
   SectionIn 1
   ; --- install mbed CLI ---
+  ReadRegStr $0 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
   File "..\source\pip_install_mbed.bat"
-  nsExec::ExecToStack '"$INSTDIR\pip_install_mbed.bat" "$INSTDIR" "${MBED_CLI_VERSION}"'
+  nsExec::ExecToStack '$INSTDIR\pip_install_mbed.bat $INSTDIR $0'
   ; --- add shortcut and batch script to windows ---
   File "..\source\run_mbed.bat"
   File "..\source\p.ico"
