@@ -46,7 +46,7 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI Windows"
-  !define PRODUCT_VERSION   "0.3.4"
+  !define PRODUCT_VERSION   "0.3.5"
   !define MBED_CLI_ZIP      "mbed-cli-1.0.0.zip"
   !define MBED_CLI_VERSION  "mbed-cli-1.0.0"
   !define PRODUCT_PUBLISHER "ARM mbed"
