@@ -2,6 +2,10 @@
 
 This repository contains the source files to build the mbed CLI Windows installer. See the [releases page](https://github.com/ARMmbed/mbed-cli-windows-installer/releases/latest) for downloads.
 
+## Supported platforms
+
+* Windows 7 and above
+
 ## Setup
 
 1. Install NSIS, which can be found at [nsis.sourceforge.net](http://nsis.sourceforge.net/Download).
@@ -23,6 +27,7 @@ $ powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
 * Contains two installer types:
 - Default: Installs all dependencies.
 - Advanced: Allows to select dependencies.
+* On Windows 10 installer allows to install Bash completion script. Option is available only when Bash shell is enabled. Check [enable Bash shell in Windows 10](http://www.windowscentral.com/how-install-bash-shell-command-line-windows-10) for more information. 
 
 ## Silent Install
 
