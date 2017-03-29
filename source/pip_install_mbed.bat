@@ -19,6 +19,5 @@ set PYTHON_PATH=;%1;%1Scripts;%1Tools\Scripts;
 set PATH=%PYTHON_PATH%;%PATH%;
 
 :: ensure that pip is installed
-python -m ensurepip
-
-cmd /K "pip install -I -U mbed-cli & exit"
+cd %2
+cmd /K "python setup.py install & exit"

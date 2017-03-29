@@ -47,6 +47,8 @@ ${StrTrimNewLines}
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI Windows"
   !define PRODUCT_VERSION   "0.3.4"
+  !define MBED_CLI_ZIP      "mbed-cli-1.0.0.zip"
+  !define MBED_CLI_VERSION  "mbed-cli-1.0.0"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
   !define GCC_ZIP     "gcc-arm-none-eabi-5_4-2016q3-20160926-win32.zip"
@@ -144,8 +146,10 @@ Section "mbed" SecMbed
   SectionIn 1
   ; --- install mbed CLI ---
   ReadRegStr $0 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
+  File "..\prerequisites\${MBED_CLI_ZIP}"
+  nsisunz::Unzip "$INSTDIR\${MBED_CLI_ZIP}" "$INSTDIR\mbed-cli"
   File "..\source\pip_install_mbed.bat"
-  nsExec::ExecToStack '$INSTDIR\pip_install_mbed.bat $0'
+  nsExec::ExecToStack '$INSTDIR\pip_install_mbed.bat $0 $INSTDIR\mbed-cli\${MBED_CLI_VERSION}'
   ; --- add shortcut and batch script to windows ---
   File "..\source\p.ico"
 SectionEnd
@@ -235,9 +239,9 @@ functionEnd
 
 ;--------------------------------
 ;Descriptions of Installer options
-LangString DESC_SecPython     ${LANG_ENGLISH} "Install python and pip. pip is required to install mbed CLI."
+LangString DESC_SecPython     ${LANG_ENGLISH} "Install python and pip."
 LangString DESC_SecGCC        ${LANG_ENGLISH} "Install arm-none-eabi-gcc as default compiler. If you have armcc you can use that instead."
-LangString DESC_SecMbed       ${LANG_ENGLISH} "Install mbed CLI using pip, requires an internet connection, requires Python and pip to be installed"
+LangString DESC_SecMbed       ${LANG_ENGLISH} "Install mbed CLI, requires Python to be installed"
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
 LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
 LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Installing Windows mbed serial driver requires an mbed board. Make sure you have an mbed board plugged into your computer."
