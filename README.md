@@ -25,8 +25,8 @@ $ powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
 
 * Install the mbed CLI dependencies - Python, GCC, Mercurial, Git and the mbed Serial Driver - and then mbed CLI itself using pip.
 * Contains two installer types:
-- Default: Installs all dependencies.
-- Advanced: Allows to select dependencies.
+  * Default: Installs all dependencies.
+  * Advanced: Allows to select dependencies.
 * On Windows 10 installer allows to install Bash completion script. Option is available only when Bash shell is enabled. Check [enable Bash shell in Windows 10](http://www.windowscentral.com/how-install-bash-shell-command-line-windows-10) for more information. 
 
 ## Silent Install
