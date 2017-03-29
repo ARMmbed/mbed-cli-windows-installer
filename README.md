@@ -23,7 +23,7 @@ $ powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
 
 ## Process
 
-* Install the mbed CLI dependencies - Python, GCC, Mercurial, Git and the mbed Serial Driver - and then mbed CLI itself using pip.
+* Install the mbed CLI dependencies - Python, GCC, Mercurial, Git and the mbed Serial Driver - and then mbed CLI 1.0.0 from source.
 * Contains two installer types:
   * Default: Installs all dependencies.
   * Advanced: Allows to select dependencies.
@@ -39,9 +39,9 @@ $ mbed_installer_{version}.exe /S
 ## Using mbed_install_vX.x.x
 
 1. Download the [latest release of the mbed CLI Windows installer](https://github.com/ARMmbed/mbed-cli-windows-installer/releases/latest). 
-1. Run `mbed_installer_vX.X.X.exe` - and click through the wizard.
-1. Click the 'Run mbed CLI' icon on your desktop or from the start menu.
-1. A command prompt opens which has mbed CLI instantiated. Use `mbed import mbed-os-example-blinky` to import an example program.
+2. Run `mbed_installer_vX.X.X.exe` - and click through the wizard.
+3. Open windows command prompt.
+4. Use `mbed import mbed-os-example-blinky` to import an example program.
 
 **Note on fresh Windows systems:** When installing mbed CLI on a fresh Windows machine, you will need to open Windows Explorer once to upgrade your SSL certificates. If you fail to do so, pip - the Python package manager - cannot install dependencies properly.
 
