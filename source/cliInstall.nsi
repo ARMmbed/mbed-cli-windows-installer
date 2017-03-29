@@ -136,7 +136,7 @@ Section "python" SecPython
     File "..\prerequisites\${PYTHON_INSTALLER}"
     ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
     ; This gets python to add itsself to the path.
-    nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qn!'
+    nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qn'
   pythonExit:
 SectionEnd
 
