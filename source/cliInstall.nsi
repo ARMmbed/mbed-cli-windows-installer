@@ -205,10 +205,7 @@ Section "Uninstall"
   Delete "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed"
   RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder
   ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\gcc\bin"
-  nsExec::ExecToStack 'setx MBED_PATH ""'           ;remove environment variables
-  nsExec::ExecToStack 'reg delete HKCU\Environment /F /V MBED_PATH'
-  nsExec::ExecToStack 'setx MBED_INSTALL_LOCATION ""'
-  nsExec::ExecToStack 'reg delete HKCU\Environment /F /V MBED_INSTALL_LOCATION'
+  nsExec::ExecToStack 'pip uninstall -y mbed-cli'           ;uninstall mbed-cli
   DeleteRegKey SHCTX "${UNINST_KEY}"
 SectionEnd
 

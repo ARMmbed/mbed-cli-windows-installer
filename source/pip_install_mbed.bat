@@ -15,6 +15,10 @@
 :: limitations under the License.
 ::
 :: Set python\scripts variable because the environment hasnt been updated since python install.
-set PYTHON_PATH="%1;%1Scripts;%1Tools\Scripts"
-set PATH=%PYTHON_PATH%;%PATH%
+set PYTHON_PATH=;%1;%1Scripts;%1Tools\Scripts;
+set PATH=%PYTHON_PATH%;%PATH%;
+
+:: ensure that pip is installed
+python -m ensurepip
+
 cmd /K "pip install -I -U mbed-cli & exit"
