@@ -28,7 +28,7 @@ $ powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
 
 ```
 $ cd source
-$ mbed_installer_v0.3.4.exe /S
+$ mbed_installer_{version}.exe /S
 ```
 
 ## Using mbed_install_vX.x.x
