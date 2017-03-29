@@ -28,6 +28,7 @@
 ;--------------------------------
 ;include Modern UI
 !include MUI2.nsh
+!include "LogicLib.nsh"
 !include "StrFunc.nsh"
 ${StrRep}
 ${StrTrimNewLines}
@@ -35,6 +36,7 @@ ${StrTrimNewLines}
   !insertmacro VersionCompare
 !include "Sections.nsh"
 !include WinVer.nsh
+!include "..\include\EnvVarUpdate.nsh"
 
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "..\source\HeaderImage_Bitmap.bmp" ; recommended size: 150x57 pixels
@@ -43,19 +45,15 @@ ${StrTrimNewLines}
 
 ;--------------------------------
 ;Config Section
-  !define PRODUCT_NAME      "mbed CLI windows installer"
-  !define REG_PRODUCT_NAME  "mbed CLI"
+  !define PRODUCT_NAME      "mbed CLI Windows"
   !define PRODUCT_VERSION   "0.3.4"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
-  !define GCC_INSTALLER     "gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe"
-  !define GCC_ZIP           "gcc-arm-none-eabi-4_9-2015q3-20150921-win32.zip"
+  !define GCC_ZIP     "gcc-arm-none-eabi-5_4-2016q3-20160926-win32.zip"
   !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
-  !define MERCURIAL_INSTALLER "Mercurial-3.5.1.exe"
+  !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
-  !define MIN_GIT_VERSION "1.9.5"
-  !define MIN_MERCURIAL_VERSION "2.2.2"
   !define MIN_PYTHON_VERSION "2.7.12"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -74,6 +72,8 @@ ${StrTrimNewLines}
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TITLE 'Now, go build awesome!'
 !insertmacro MUI_PAGE_FINISH
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
 
 ;--------------------------------
 ;Branding
@@ -86,7 +86,7 @@ BrandingText "next gen build system from ${PRODUCT_PUBLISHER}"
 Section -SETTINGS
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${REG_PRODUCT_NAME}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${PRODUCT_NAME}"
   WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\mbed_uninstall.exe$\""
   WriteRegDWORD SHCTX "${UNINST_KEY}" "NoModify" "1"
   WriteRegDWORD SHCTX "${UNINST_KEY}" "NoRepair" "1"
@@ -127,7 +127,7 @@ Section "python" SecPython
     ;compare version
     ${VersionCompare} $0  ${MIN_PYTHON_VERSION} $1
     ${if} $1 == 2
-      MessageBox MB_YESNO "${REG_PRODUCT_NAME} requires Python version ${MIN_PYTHON_VERSION} or higher to work properly (Python 3 is not supported). Python $0 is already installed on this system, would you like to overwrite this installation?" IDYES pythonInstall IDNO pythonExit
+      MessageBox MB_YESNO "${PRODUCT_NAME} requires Python version ${MIN_PYTHON_VERSION} or higher to work properly (Python 3 is not supported). Python $0 is already installed on this system, would you like to overwrite this installation?" IDYES pythonInstall IDNO pythonExit
     ${Else}
       goto pythonExit
     ${endif}
@@ -136,7 +136,7 @@ Section "python" SecPython
     File "..\prerequisites\${PYTHON_INSTALLER}"
     ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
     ; This gets python to add itsself to the path.
-    nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qb!'
+    nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qn!'
   pythonExit:
 SectionEnd
 
@@ -145,12 +145,9 @@ Section "mbed" SecMbed
   ; --- install mbed CLI ---
   ReadRegStr $0 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
   File "..\source\pip_install_mbed.bat"
-  nsExec::ExecToStack '$INSTDIR\pip_install_mbed.bat $INSTDIR $0'
+  nsExec::ExecToStack '$INSTDIR\pip_install_mbed.bat $0'
   ; --- add shortcut and batch script to windows ---
-  File "..\source\run_mbed.bat"
   File "..\source\p.ico"
-  CreateShortCut "$SMPROGRAMS\Run mbed CLI.lnk" "$INSTDIR\run_mbed.bat"  ""  "$INSTDIR\p.ico"
-  CreateShortCut "$DESKTOP\Run mbed CLI.lnk"    "$INSTDIR\run_mbed.bat"  ""  "$INSTDIR\p.ico"
 SectionEnd
 
 Section "git-scm" SecGit
@@ -160,8 +157,8 @@ Section "git-scm" SecGit
   nsExec::ExecToStack 'git --version'
   Pop $0
   ${if} $0 != 0
-	File "..\prerequisites\${GIT_INSTALLER}"
-	ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
+	  File "..\prerequisites\${GIT_INSTALLER}"
+	  ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
   ${endif}
 SectionEnd
 
@@ -172,8 +169,8 @@ Section "mercurial" SecMercurial
   nsExec::ExecToStack 'hg --version'
   Pop $0
   ${if} $0 != 0
-	File "..\prerequisites\${MERCURIAL_INSTALLER}"
-	ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
+	  File "..\prerequisites\${MERCURIAL_INSTALLER}"
+	  ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
   ${endif}
 SectionEnd
 
@@ -182,6 +179,7 @@ Section "gcc" SecGCC
   ; --- unzip gcc release ---
   File "..\prerequisites\${GCC_ZIP}"
   nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
+  ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\gcc\bin"
 SectionEnd
 
 Section "mbed serial driver" SecMbedSerialDriver
@@ -205,9 +203,8 @@ SectionEnd
 
 Section "Uninstall"
   Delete "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed"
-  Delete "$DESKTOP\Run mbed CLI.lnk"                ;delete desktop shortcut
-  Delete "$SMPROGRAMS\Run mbed CLI.lnk"             ;delete startmenu shortcut
-  RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder 
+  RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder
+  ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\gcc\bin"
   nsExec::ExecToStack 'setx MBED_PATH ""'           ;remove environment variables
   nsExec::ExecToStack 'reg delete HKCU\Environment /F /V MBED_PATH'
   nsExec::ExecToStack 'setx MBED_INSTALL_LOCATION ""'

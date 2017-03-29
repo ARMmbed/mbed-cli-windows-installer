@@ -15,19 +15,6 @@
 :: limitations under the License.
 ::
 :: Set python\scripts variable because the environment hasnt been updated since python install.
-set MBED_PATH="%1;%1\gcc\bin;%1\cmake-3.4.0-rc3-win32-x86\bin;%2;%2Scripts;%2Tools\Scripts"
-setx MBED_PATH %MBED_PATH%
-set PATH=%MBED_PATH%;%PATH%
-
-:: spaces -> ^spaces for string safety
-set mbedlocation=%1
-set mbedlocation=%mbedlocation: =^ %
-setx MBED_INSTALL_LOCATION %mbedlocation%
-
-:: install virtual environment
-pip install virtualenv 
-
-:: create virtual environment in \mbed-cli\workspace to sandbox mbed-cli from system.
-cd %1
-virtualenv --system-site-packages workspace
-cmd /K "%1\workspace\Scripts\activate & pip install -I -U mbed-cli & exit"
+set PYTHON_PATH="%1;%1Scripts;%1Tools\Scripts"
+set PATH=%PYTHON_PATH%;%PATH%
+cmd /K "pip install -I -U mbed-cli & exit"

@@ -1,1 +1,4 @@
 source/*.exe
+prerequisites/*.zip
+prerequisites/*.exe
+prerequisites/*.msi
