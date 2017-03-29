@@ -10,7 +10,7 @@ This repository contains the source files to build the mbed CLI Windows installe
 
 1. Install NSIS, which can be found at [nsis.sourceforge.net](http://nsis.sourceforge.net/Download).
 2. Download this repository.
-3. Download prerequisites all run following powershell script to download them.
+3. Download prerequisites manually or run following powershell script.
 
 ```
 $ cd prerequisites
