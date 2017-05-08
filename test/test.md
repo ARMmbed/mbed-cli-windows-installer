@@ -2,7 +2,6 @@
 
 ## Supported Platforms
 platforms: Windows 7(32, 64 bit), Windows 8(32, 64 bit), Windows 8.1(32, 64 bit), Windows 10(32, 64 bit)
-Test scenarios:
 
 ## Test scenarios
 ### Install on a fresh system.
