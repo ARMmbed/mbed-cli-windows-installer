@@ -46,9 +46,9 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI Windows"
-  !define PRODUCT_VERSION   "0.3.5"
-  !define MBED_CLI_ZIP      "mbed-cli-1.0.0.zip"
-  !define MBED_CLI_VERSION  "mbed-cli-1.0.0"
+  !define PRODUCT_VERSION   "0.3.6"
+  !define MBED_CLI_ZIP      "mbed-cli-1.1.1.zip"
+  !define MBED_CLI_VERSION  "mbed-cli-1.1.1"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
   !define GCC_ZIP     "gcc-arm-none-eabi-5_4-2016q3-20160926-win32.zip"
@@ -198,15 +198,9 @@ Section "mbed serial driver" SecMbedSerialDriver
   end_mbed_serial_driver:
 SectionEnd
 
-Section "windows bash" SecWindowsBash
-  File "mbed"
-  CopyFiles $INSTDIR\mbed $LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed
-SectionEnd
-
 ;--------------------------------
 
 Section "Uninstall"
-  Delete "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\mbed"
   RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder
   ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\gcc\bin"
   nsExec::ExecToStack 'pip uninstall -y mbed-cli'           ;uninstall mbed-cli
@@ -221,12 +215,6 @@ Function .onInit
      MessageBox MB_OK "Windows 7 and above is required"
      Quit
    ${EndIf}
-   ;Check if bash in Windows 10 is installed
-   ${IfNot} ${FileExists} "$LOCALAPPDATA\lxss\rootfs\etc\bash_completion.d\*"
-     ;Hide bash code completion section
-     !insertmacro UnselectSection ${SecWindowsBash}
-     SectionSetText ${SecWindowsBash} ""
-   ${endif}
 functionEnd
 
 ;--------------------------------
@@ -245,7 +233,6 @@ LangString DESC_SecMbed       ${LANG_ENGLISH} "Install mbed CLI, requires Python
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
 LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
 LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Installing Windows mbed serial driver requires an mbed board. Make sure you have an mbed board plugged into your computer."
-LangString DESC_SecWindowsBash  ${LANG_ENGLISH} "Install windows Bash shell."
 
 ;--------------------------------
 ;Add descriptions to installer menu
@@ -256,5 +243,4 @@ LangString DESC_SecWindowsBash  ${LANG_ENGLISH} "Install windows Bash shell."
   !insertmacro MUI_DESCRIPTION_TEXT ${SecGit}         $(DESC_SecGit)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMercurial}   $(DESC_SecMercurial)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMbedSerialDriver} $(DESC_SecMbedSerialDriver)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecWindowsBash} $(DESC_SecWindowsBash)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
