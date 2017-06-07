@@ -1,8 +1,8 @@
 $storageDir = $pwd
 $webclient = New-Object System.Net.WebClient
 #Download gcc-arm-none-eabi
-$url = "https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.zip"
-$file = "$storageDir\gcc-arm-none-eabi-5_4-2016q3-20160926-win32.zip"
+$url = "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6_1-2017q1/gcc-arm-none-eabi-6-2017-q1-update-win32-zip.zip?product=GNU%20ARM%20Embedded%20Toolchain,ZIP,,Windows,6-2017-q1-update"
+$file = "$storageDir\gcc-arm-none-eabi-6-2017-q1-update-win32.zip"
 $webclient.DownloadFile($url,$file)
 #Download git-scm
 $url = "https://github.com/git-for-windows/git/releases/download/v2.12.2.windows.1/Git-2.12.2-32-bit.exe"

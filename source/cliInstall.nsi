@@ -46,12 +46,12 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI Windows"
-  !define PRODUCT_VERSION   "0.3.6"
+  !define PRODUCT_VERSION   "0.4.0"
   !define MBED_CLI_ZIP      "mbed-cli-1.1.1.zip"
   !define MBED_CLI_VERSION  "mbed-cli-1.1.1"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
-  !define GCC_ZIP     "gcc-arm-none-eabi-5_4-2016q3-20160926-win32.zip"
+  !define GCC_ZIP     "gcc-arm-none-eabi-6-2017-q1-update-win32.zip"
   !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
