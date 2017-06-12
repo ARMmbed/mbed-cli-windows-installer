@@ -139,6 +139,7 @@ Section "python" SecPython
     ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
     ; This gets python to add itsself to the path.
     nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qn'
+    Delete $INSTDIR\${PYTHON_INSTALLER}
   pythonExit:
 SectionEnd
 
@@ -148,8 +149,10 @@ Section "mbed" SecMbed
   ReadRegStr $0 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
   File "..\prerequisites\${MBED_CLI_ZIP}"
   nsisunz::Unzip "$INSTDIR\${MBED_CLI_ZIP}" "$INSTDIR\mbed-cli"
+  DELETE "$INSTDIR\${MBED_CLI_ZIP}"
   File "..\source\pip_install_mbed.bat"
   nsExec::ExecToStack '$INSTDIR\pip_install_mbed.bat $0 $INSTDIR\mbed-cli\${MBED_CLI_VERSION}'
+  DELETE "$INSTDIR\pip_install_mbed.bat"
   ; --- add shortcut and batch script to windows ---
   File "..\source\p.ico"
 SectionEnd
@@ -163,6 +166,7 @@ Section "git-scm" SecGit
   ${if} $0 != 0
 	  File "..\prerequisites\${GIT_INSTALLER}"
 	  ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
+	  Delete $INSTDIR\${GIT_INSTALLER}
   ${endif}
 SectionEnd
 
@@ -175,6 +179,7 @@ Section "mercurial" SecMercurial
   ${if} $0 != 0
 	  File "..\prerequisites\${MERCURIAL_INSTALLER}"
 	  ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
+          Delete $INSTDIR\${MERCURIAL_INSTALLER}
   ${endif}
 SectionEnd
 
@@ -183,6 +188,7 @@ Section "gcc" SecGCC
   ; --- unzip gcc release ---
   File "..\prerequisites\${GCC_ZIP}"
   nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
+  Delete $INSTDIR\${GCC_ZIP}
   ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\gcc\bin"
 SectionEnd
 
@@ -201,9 +207,14 @@ SectionEnd
 ;--------------------------------
 
 Section "Uninstall"
-  RMDir /r "$INSTDIR\"                              ;delete c:\mbed-cli folder
   ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\gcc\bin"
   nsExec::ExecToStack 'pip uninstall -y mbed-cli'           ;uninstall mbed-cli
+  RMDir /r "$INSTDIR\mbed-cli"
+  RMDir /r "$INSTDIR\gcc"
+  Delete "$INSTDIR\${MBED_SERIAL_DRIVER}"
+  Delete "$INSTDIR\p.ico"
+  Delete "$INSTDIR\mbed_uninstall.exe"
+  RMDir "$INSTDIR\"					    ;remove install folder(only if empty)
   DeleteRegKey SHCTX "${UNINST_KEY}"
 SectionEnd
 
@@ -220,7 +231,7 @@ functionEnd
 ;--------------------------------
 ;un Init
 function un.onInit
-  MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace (c:\mbed-cli\workspace), please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK next
+  MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace, please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK next
     Abort
   next:
 functionEnd
