@@ -36,7 +36,6 @@ ${StrTrimNewLines}
   !insertmacro VersionCompare
 !include "Sections.nsh"
 !include WinVer.nsh
-!include "..\include\EnvVarUpdate.nsh"
 
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "..\source\HeaderImage_Bitmap.bmp" ; recommended size: 150x57 pixels
@@ -46,12 +45,12 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "mbed CLI for Windows"
-  !define PRODUCT_VERSION   "0.4.0"
+  !define PRODUCT_VERSION   "0.4.1"
   !define MBED_CLI_ZIP      "mbed-cli-1.1.1.zip"
   !define MBED_CLI_VERSION  "mbed-cli-1.1.1"
   !define PRODUCT_PUBLISHER "ARM mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
-  !define GCC_ZIP     "gcc-arm-none-eabi-6-2017-q1-update-win32.zip"
+  !define GCC_EXE     "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
   !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
@@ -179,17 +178,16 @@ Section "mercurial" SecMercurial
   ${if} $0 != 0
 	  File "..\prerequisites\${MERCURIAL_INSTALLER}"
 	  ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
-          Delete $INSTDIR\${MERCURIAL_INSTALLER}
+	  Delete $INSTDIR\${MERCURIAL_INSTALLER}
   ${endif}
 SectionEnd
 
 Section "gcc" SecGCC
   SectionIn 1
   ; --- unzip gcc release ---
-  File "..\prerequisites\${GCC_ZIP}"
-  nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
-  Delete $INSTDIR\${GCC_ZIP}
-  ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\gcc\bin"
+  File "..\prerequisites\${GCC_EXE}"
+  ; --- install silently add to path and registry
+  ExecWait "$INSTDIR\${GCC_EXE} /S /P /R /SUPPRESSMSGBOXES"
 SectionEnd
 
 Section "mbed serial driver" SecMbedSerialDriver
@@ -207,10 +205,8 @@ SectionEnd
 ;--------------------------------
 
 Section "Uninstall"
-  ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\gcc\bin"
   nsExec::ExecToStack 'pip uninstall -y mbed-cli'           ;uninstall mbed-cli
   RMDir /r "$INSTDIR\mbed-cli"
-  RMDir /r "$INSTDIR\gcc"
   Delete "$INSTDIR\${MBED_SERIAL_DRIVER}"
   Delete "$INSTDIR\p.ico"
   Delete "$INSTDIR\mbed_uninstall.exe"
@@ -227,6 +223,12 @@ Function .onInit
      Quit
    ${EndIf}
 functionEnd
+
+;--------------------------------
+;onInstSuccess
+Function .onInstSuccess
+   Delete $INSTDIR\${GCC_EXE}
+FunctionEnd
 
 ;--------------------------------
 ;un Init

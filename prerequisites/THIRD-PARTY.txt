@@ -122,11 +122,10 @@ STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFT
 
 =====================================================================
 
-GCC v4.9
+GCC v6.0
 
 See information here for the corresponding source code:
-https://launchpad.net/gcc-arm-embedded
-https://launchpadlibrarian.net/209776344/release.txt
+https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
 
 GNU GENERAL PUBLIC LICENSE 
 Version 3, 29 June 2007
