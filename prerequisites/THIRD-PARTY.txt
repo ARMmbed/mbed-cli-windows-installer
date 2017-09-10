@@ -370,7 +370,7 @@ https://github.com/git-for-windows/git
 The software included in this product contains copyrighted software that is licensed under the GPL.You may obtain the complete Corresponding Source code from us, by sending a request to: 
 GPL Compliance Division
 cc Senior IoT Apps Engineer 
-ARM Inc.
+Arm Inc.
 Encino Trace
 5707 Southwest Pkwy
 Bld 1 Suite 100
@@ -718,7 +718,7 @@ Public License instead of this License.
 
 =====================================================================
 
-Mercurial v3.5.1
+Mercurial v4.1.1
 
 See information here for the corresponding source code:
 https://www.mercurial-scm.org/wiki/Download
@@ -730,7 +730,7 @@ Please see the LICENSE file for details.
 The software included in this product contains copyrighted software that is licensed under the GPL.You may obtain the complete Corresponding Source code from us, by sending a request to: 
 GPL Compliance Division
 cc Senior IoT Apps Engineer 
-ARM Inc.
+Arm Inc.
 Encino Trace
 5707 Southwest Pkwy
 Bld 1 Suite 100

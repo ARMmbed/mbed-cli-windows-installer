@@ -1,4 +1,4 @@
-mbed CLI Installer is licensed under the Apache Software License 2.0
+Mbed CLI Installer is licensed under the Apache Software License 2.0
 
 
                                  Apache License
@@ -179,7 +179,7 @@ mbed CLI Installer is licensed under the Apache Software License 2.0
 ==========================================================================
 ==========================================================================
 
-mbed CLI Installer also installs, at your option the following:
+Mbed CLI Installer also installs, at your option the following:
 
 =====================================================================
 
