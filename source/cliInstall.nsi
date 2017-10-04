@@ -1,4 +1,4 @@
-; Copyright (c) 2015 ARM Limited. All rights reserved.
+; Copyright (c) 2017 Arm Limited. All rights reserved.
 ;
 ; SPDX-License-Identifier: Apache-2.0
 ;
@@ -14,9 +14,9 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-; mbed CLI Windows Installer
+; Mbed CLI Windows Installer
 ;
-; This script installs the mbed CLI dependencies and then mbed CLI itself
+; This script installs the Mbed CLI dependencies and then Mbed CLI itself
 ; pip is installed as part of python, it is assumed to exist on the user system
 ; All dependencies use NSIS for their installers, See http://nsis.sourceforge.net/Docs/Chapter4.html#4.12
 ;  for a full list of NSIS install parameters
@@ -44,11 +44,11 @@ ${StrTrimNewLines}
 
 ;--------------------------------
 ;Config Section
-  !define PRODUCT_NAME      "mbed CLI for Windows"
-  !define PRODUCT_VERSION   "0.4.1"
-  !define MBED_CLI_ZIP      "mbed-cli-1.1.1.zip"
-  !define MBED_CLI_VERSION  "mbed-cli-1.1.1"
-  !define PRODUCT_PUBLISHER "ARM mbed"
+  !define PRODUCT_NAME      "Mbed CLI for Windows"
+  !define PRODUCT_VERSION   "0.4.2"
+  !define MBED_CLI_ZIP      "mbed-cli-1.2.0.zip"
+  !define MBED_CLI_VERSION  "mbed-cli-1.2.0"
+  !define PRODUCT_PUBLISHER "Arm Mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
   !define GCC_EXE     "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
   !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
@@ -58,14 +58,14 @@ ${StrTrimNewLines}
   !define MIN_PYTHON_VERSION "2.7.12"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-  OutFile "mbed_installer_v${PRODUCT_VERSION}.exe"
+  OutFile "Mbed_installer_v${PRODUCT_VERSION}.exe"
   InstallDir "C:\mbed-cli"
   ShowInstDetails show
 
 ;--------------------------------
 ;Pages
 !define MUI_ABORTWARNING
-!define MUI_WELCOMEPAGE_TITLE 'Install mbed CLI'
+!define MUI_WELCOMEPAGE_TITLE 'Install Mbed CLI'
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\source\license.txt"
 !insertmacro MUI_PAGE_DIRECTORY
@@ -144,7 +144,7 @@ SectionEnd
 
 Section "mbed" SecMbed
   SectionIn 1
-  ; --- install mbed CLI ---
+  ; --- install Mbed CLI ---
   ReadRegStr $0 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
   File "..\prerequisites\${MBED_CLI_ZIP}"
   nsisunz::Unzip "$INSTDIR\${MBED_CLI_ZIP}" "$INSTDIR\mbed-cli"
@@ -193,12 +193,12 @@ SectionEnd
 Section "mbed serial driver" SecMbedSerialDriver
   SectionIn 1
   File "..\prerequisites\${MBED_SERIAL_DRIVER}"
-  MessageBox MB_OKCANCEL "Installing the mbed Windows serial driver. Please make sure to have a mbed enabled board plugged into your computer." IDOK install_mbed_driver IDCANCEL dont_install_mbed_driver
+  MessageBox MB_OKCANCEL "Installing the Mbed Windows serial driver. Please make sure to have a Mbed enabled board plugged into your computer." IDOK install_mbed_driver IDCANCEL dont_install_mbed_driver
   install_mbed_driver:
     ExecWait "$INSTDIR\${MBED_SERIAL_DRIVER}"
     Goto end_mbed_serial_driver
   dont_install_mbed_driver:
-    MessageBox MB_OK "If you would like to install the mbed Windows serial driver in the future you can find it at $INSTDIR\${MBED_SERIAL_DRIVER}"
+    MessageBox MB_OK "If you would like to install the Mbed Windows serial driver in the future you can find it at $INSTDIR\${MBED_SERIAL_DRIVER}"
   end_mbed_serial_driver:
 SectionEnd
 
@@ -233,7 +233,7 @@ FunctionEnd
 ;--------------------------------
 ;un Init
 function un.onInit
-  MessageBox MB_OKCANCEL "Uninstalling mbed CLI will also remove your mbed CLI workspace, please make sure to back up all programs before un-installing. $\n Would you like to continue removing mbed CLI?" IDOK next
+  MessageBox MB_OKCANCEL "Uninstalling Mbed CLI will also remove your Mbed CLI workspace, please make sure to back up all programs before un-installing. $\n Would you like to continue removing Mbed CLI?" IDOK next
     Abort
   next:
 functionEnd
@@ -242,10 +242,10 @@ functionEnd
 ;Descriptions of Installer options
 LangString DESC_SecPython     ${LANG_ENGLISH} "Install python and pip."
 LangString DESC_SecGCC        ${LANG_ENGLISH} "Install arm-none-eabi-gcc as default compiler. If you have armcc you can use that instead."
-LangString DESC_SecMbed       ${LANG_ENGLISH} "Install mbed CLI, requires Python to be installed"
+LangString DESC_SecMbed       ${LANG_ENGLISH} "Install Mbed CLI, requires Python to be installed"
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
 LangString DESC_SecMercurial  ${LANG_ENGLISH} "Install mercurial, used to access mercurial (hg) based repositories"
-LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Installing Windows mbed serial driver requires an mbed board. Make sure you have an mbed board plugged into your computer."
+LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Installing Windows Mbed serial driver requires an Mbed board. Make sure you have an Mbed board plugged into your computer."
 
 ;--------------------------------
 ;Add descriptions to installer menu
