@@ -176,60 +176,14 @@ Mbed CLI Installer is licensed under the Apache Software License 2.0
       incurred by, or claims asserted against, such Contributor by reason
       of your accepting any such warranty or additional liability.
 
-==========================================================================
-==========================================================================
+=====================================================
+=====================================================
 
 Mbed CLI Installer also installs, at your option the following:
 
-=====================================================================
+=====================================================
 
-CMake 3.2.1
-Cross Platform Makefile Generator
-http://www.cmake.org/about/
-
-Copyright 2000-2014 Kitware, Inc.
-Copyright 2000-2011 Insight Software Consortium
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-* Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright
-notice, this list of conditions and the following disclaimer in the
-documentation and/or other materials provided with the distribution.
-
-* Neither the names of Kitware, Inc., the Insight Software Consortium,
-nor the names of their contributors may be used to endorse or promote
-products derived from this software without specific prior written
-permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-
-=====================================================================
-
-Ninja
-Copyright 2011 Google Inc. All Rights Reserved.
-
-This project is distributed under the Apache 2.0 License.
-
-
-=====================================================================
-
-Python 2.7.10
+Python 2.7.13
 See: https://docs.python.org/2/license.html
 
 PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
@@ -304,9 +258,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-=====================================================================
+=====================================================
 
-GCC v4.9
+GCC 6-2017-q2-update
 
 Copyright (C) 1987-2015 Free Software Foundation, Inc.
 
@@ -328,9 +282,9 @@ See information here for the corresponding source code:
 https://launchpad.net/gcc-arm-embedded
 https://launchpadlibrarian.net/209776344/release.txt
 
-=====================================================================
+=====================================================
 
-Mercurial v3.5.1
+Mercurial v4.1.1
 
 See information here for the corresponding source code:
 https://www.mercurial-scm.org/wiki/Download
@@ -350,9 +304,9 @@ This program is free software; you can redistribute it and/or modify
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-=====================================================================
+=====================================================
 
-Git-SCM v2.5.3
+Git-scm v2.11.0.3
 
 See information here for the corresponding source code:
 http://git-scm.com/download/win
