@@ -46,8 +46,8 @@ ${StrTrimNewLines}
 ;Config Section
   !define PRODUCT_NAME      "Mbed CLI for Windows"
   !define PRODUCT_VERSION   "0.4.2"
-  !define MBED_CLI_ZIP      "mbed-cli-1.2.0.zip"
-  !define MBED_CLI_VERSION  "mbed-cli-1.2.0"
+  !define MBED_CLI_ZIP      "mbed-cli-1.2.2.zip"
+  !define MBED_CLI_VERSION  "mbed-cli-1.2.2"
   !define PRODUCT_PUBLISHER "Arm Mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
   !define GCC_EXE     "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
