@@ -45,9 +45,9 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME      "Mbed CLI for Windows"
-  !define PRODUCT_VERSION   "0.4.3"
-  !define MBED_CLI_ZIP      "mbed-cli-1.2.2.zip"
-  !define MBED_CLI_VERSION  "mbed-cli-1.2.2"
+  !define PRODUCT_VERSION   "0.4.4"
+  !define MBED_CLI_ZIP      "mbed-cli-1.4.0.zip"
+  !define MBED_CLI_VERSION  "mbed-cli-1.4.0"
   !define PRODUCT_PUBLISHER "Arm Mbed"
   !define PYTHON_INSTALLER  "python-2.7.13.msi"
   !define GCC_EXE     "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
@@ -217,11 +217,24 @@ SectionEnd
 ;--------------------------------
 ;Init
 Function .onInit
-   ;Check Windows version. Windows 7 or above is required
-   ${IfNot} ${AtLeastWin7}
-     MessageBox MB_OK "Windows 7 and above is required"
-     Quit
-   ${EndIf}
+  ;Check Windows version. Windows 7 or above is required
+  ${IfNot} ${AtLeastWin7}
+    MessageBox MB_OK "Windows 7 and above is required"
+    Quit
+  ${EndIf}
+  ReadRegStr $R0 SHCTX "${UNINST_KEY}" "UninstallString"
+  StrCmp $R0 "" done
+
+  MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+    "${PRODUCT_NAME} has been detected on this system. It will be removed during this installation process. Would you like to continue?" \
+  IDYES uninst
+  Abort
+
+  ;Run the uninstaller
+  uninst:
+    ClearErrors
+    Exec '$R0' ;Run uninstaller
+  done:
 functionEnd
 
 ;--------------------------------
