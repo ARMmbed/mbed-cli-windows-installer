@@ -23,7 +23,7 @@ $ powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
 
 ## Process
 
-* Install the mbed CLI dependencies - Python, GCC, Mercurial, Git and the mbed Serial Driver - and then mbed CLI 1.2.2 from source.
+* Install the mbed CLI dependencies - Python, GCC, Mercurial, Git and the mbed Serial Driver - and then mbed CLI 1.4.0 from source.
 * Contains two installer types:
   * Default: Installs all dependencies.
   * Advanced: Allows to select dependencies.
