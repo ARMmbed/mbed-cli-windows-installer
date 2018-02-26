@@ -18,7 +18,7 @@ $ powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
 ```
 
 4. Open NSIS, click 'Compile NSI Scripts'.
-5. Click 'File > Load Script' and select `source/cliInstall.nsi`.
+5. Click 'File > Load Script' and select `source/install.nsi`.
 6. Click 'Test installer' to build (output directory is `source`).
 
 ## Process
