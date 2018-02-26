@@ -52,8 +52,9 @@ ${StrTrimNewLines}
   !define PRODUCT_PUBLISHER   "Arm Mbed"
   !define PYTHON_ZIP          "python-2.7.13.zip"
   !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
-  !define GCC_EXE             "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
-  !define GIT_INSTALLER       "Git-2.11.0.3-32-bit.exe"
+  !define GCC_ZIP             "gcc-arm-none-eabi-7-2017-q4-update-win32.zip"
+  !define GCC_ENV_VARIABLE    "MBED_GCC_ARM_PATH"
+  !define GIT_INSTALLER       "Git-2.16.2-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
@@ -145,7 +146,7 @@ Section "git-scm" SecGit
   Pop $0
   ${if} $0 != 0
 	  File "..\prerequisites\${GIT_INSTALLER}"
-	  ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
+	  ExecWait "$INSTDIR\${GIT_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$INSTDIR\git"
 	  Delete $INSTDIR\${GIT_INSTALLER}
   ${endif}
 SectionEnd
@@ -158,7 +159,7 @@ Section "mercurial" SecMercurial
   Pop $0
   ${if} $0 != 0
 	  File "..\prerequisites\${MERCURIAL_INSTALLER}"
-	  ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES"
+	  ExecWait "$INSTDIR\${MERCURIAL_INSTALLER} /VERYSILENT /SUPPRESSMSGBOXES /DIR=$INSTDIR\mercurial"
 	  Delete $INSTDIR\${MERCURIAL_INSTALLER}
   ${endif}
 SectionEnd
@@ -166,9 +167,14 @@ SectionEnd
 Section "gcc" SecGCC
   SectionIn 1
   ; --- unzip gcc release ---
-  File "..\prerequisites\${GCC_EXE}"
-  ; --- install silently add to path and registry
-  ExecWait "$INSTDIR\${GCC_EXE} /S /P /R /SUPPRESSMSGBOXES"
+  File "..\prerequisites\${GCC_ZIP}"
+  ; --- unzip gcc
+  nsisunz::Unzip "$INSTDIR\${GCC_ZIP}" "$INSTDIR\gcc"
+  ; --- add gcc to env variable
+  Push "${GCC_ENV_VARIABLE}"
+  Push "$INSTDIR\gcc\bin"
+  Call AddToEnvVar
+  Delete $INSTDIR\${GCC_ZIP}
 SectionEnd
 
 Section "mbed serial driver" SecMbedSerialDriver
@@ -189,12 +195,31 @@ Section "Uninstall"
   nsExec::ExecToStack 'pip uninstall -y mbed-cli'           ;uninstall mbed-cli
   RMDir /r "$INSTDIR\mbed-cli"
   RMDir /r "$INSTDIR\python"
+  RMDir /r "$INSTDIR\gcc"
+  ;uninstall git if installed by this installer
+  IfFileExists "$INSTDIR\git\unins000.exe" git_uninstall git_continue
+  git_uninstall:
+    ExecWait "$INSTDIR\git\unins000.exe /VERYSILENT /SUPPRESSMSGBOXES"
+    Delete "$INSTDIR\git\unins000.exe"
+    RMDir /r "$INSTDIR\git"
+  git_continue:
+  ;uninstall hg if installed by this installer
+  IfFileExists "$INSTDIR\mercurial\unins000.exe" hg_uninstall hg_continue
+  hg_uninstall:
+    ExecWait "$INSTDIR\mercurial\unins000.exe /VERYSILENT /SUPPRESSMSGBOXES"
+    Delete "$INSTDIR\mercurial\unins000.exe"
+    RMDir /r "$INSTDIR\hg"
+  hg_continue:
   Delete "$INSTDIR\${MBED_SERIAL_DRIVER}"
   Delete "$INSTDIR\p.ico"
   Delete "$INSTDIR\mbed_uninstall.exe"
   ; --- Remove env variables
   Push "${MBED_CLI_ENV}"
   Push "$INSTDIR\python\Scripts"
+  Call un.RemoveFromEnvVar
+  ;
+  Push "${GCC_ENV_VARIABLE}"
+  Push "$INSTDIR\gcc\bin"
   Call un.RemoveFromEnvVar
   ; remove MBED_CLI_ENV from path
   Push "%${MBED_CLI_ENV}%"
@@ -226,12 +251,6 @@ Function .onInit
     Exec '$R0' ;Run uninstaller
   done:
 functionEnd
-
-;--------------------------------
-;onInstSuccess
-Function .onInstSuccess
-   Delete $INSTDIR\${GCC_EXE}
-FunctionEnd
 
 ;--------------------------------
 ;un Init
