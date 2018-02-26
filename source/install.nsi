@@ -28,13 +28,14 @@
 ;--------------------------------
 ;include Modern UI
 !include MUI2.nsh
+!addincludedir ..\include
 !include "LogicLib.nsh"
 !include "StrFunc.nsh"
 ${StrRep}
 ${StrTrimNewLines}
-!include "WordFunc.nsh"
-  !insertmacro VersionCompare
 !include "Sections.nsh"
+!include "EnvVarUpdate.nsh"
+!include PathUpdate.nsh
 !include WinVer.nsh
 
 !define MUI_HEADERIMAGE
@@ -44,18 +45,18 @@ ${StrTrimNewLines}
 
 ;--------------------------------
 ;Config Section
-  !define PRODUCT_NAME      "Mbed CLI for Windows"
-  !define PRODUCT_VERSION   "0.4.4"
-  !define MBED_CLI_ZIP      "mbed-cli-1.4.0.zip"
-  !define MBED_CLI_VERSION  "mbed-cli-1.4.0"
-  !define PRODUCT_PUBLISHER "Arm Mbed"
-  !define PYTHON_INSTALLER  "python-2.7.13.msi"
-  !define GCC_EXE     "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
-  !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
+  !define PRODUCT_NAME        "Mbed CLI for Windows"
+  !define PRODUCT_VERSION     "0.5.0"
+  !define MBED_CLI_ZIP        "mbed-cli-1.4.0.zip"
+  !define MBED_CLI_VERSION    "mbed-cli-1.4.0"
+  !define PRODUCT_PUBLISHER   "Arm Mbed"
+  !define PYTHON_ZIP          "python-2.7.13.zip"
+  !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
+  !define GCC_EXE             "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
+  !define GIT_INSTALLER       "Git-2.11.0.3-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
-  !define MIN_PYTHON_VERSION "2.7.12"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "Mbed_installer_v${PRODUCT_VERSION}.exe"
@@ -110,36 +111,9 @@ InstType "Default"
 
 Section "python" SecPython
   SectionIn 1
-  SetOutPath $INSTDIR
-  ClearErrors
-  EnumRegKey $0 HKLM "SOFTWARE\Python\PythonCore\2.7" 0
-  ${If} ${Errors}
-    Goto pythonInstall
-  ${Else}
-    nsExec::ExecToStack 'python --version'
-    Pop $0
-    Pop $1
-    ${if} $0 != 0
-      goto pythonInstall
-    ${EndIf}
-    ;get python 2 version
-    ${StrRep} $0 $1 "Python " ""
-    ${StrTrimNewLines} $0 $0
-    ;compare version
-    ${VersionCompare} $0  ${MIN_PYTHON_VERSION} $1
-    ${if} $1 == 2
-      MessageBox MB_YESNO "${PRODUCT_NAME} requires Python version ${MIN_PYTHON_VERSION} or higher to work properly (Python 3 is not supported). Python $0 is already installed on this system, would you like to overwrite this installation?" IDYES pythonInstall IDNO pythonExit
-    ${Else}
-      goto pythonExit
-    ${endif}
-  ${EndIf}
-  pythonInstall:
-    File "..\prerequisites\${PYTHON_INSTALLER}"
-    ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
-    ; This gets python to add itsself to the path.
-    nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qn'
-    Delete $INSTDIR\${PYTHON_INSTALLER}
-  pythonExit:
+  File "..\prerequisites\${PYTHON_ZIP}"
+  nsisunz::Unzip "$INSTDIR\${PYTHON_ZIP}" "$INSTDIR"
+  Delete $INSTDIR\${PYTHON_ZIP}
 SectionEnd
 
 Section "mbed" SecMbed
@@ -149,11 +123,18 @@ Section "mbed" SecMbed
   File "..\prerequisites\${MBED_CLI_ZIP}"
   nsisunz::Unzip "$INSTDIR\${MBED_CLI_ZIP}" "$INSTDIR\mbed-cli"
   DELETE "$INSTDIR\${MBED_CLI_ZIP}"
-  File "..\source\pip_install_mbed.bat"
-  nsExec::ExecToStack '$INSTDIR\pip_install_mbed.bat $0 $INSTDIR\mbed-cli\${MBED_CLI_VERSION}'
-  DELETE "$INSTDIR\pip_install_mbed.bat"
+  File "..\source\install_mbed.bat"
+  nsExec::ExecToStack '$INSTDIR\install_mbed.bat $INSTDIR\python\ $INSTDIR\mbed-cli\${MBED_CLI_VERSION}'
+  DELETE "$INSTDIR\install_mbed.bat"
   ; --- add shortcut and batch script to windows ---
   File "..\source\p.ico"
+  ; --- add mbed-cli to env variable
+  Push "${MBED_CLI_ENV}"
+  Push "$INSTDIR\python\Scripts"
+  Call AddToEnvVar
+  ; --- add MBED_CLI_ENV to path
+  Push "%${MBED_CLI_ENV}%"
+  Call AddToPathSafe
 SectionEnd
 
 Section "git-scm" SecGit
@@ -207,9 +188,18 @@ SectionEnd
 Section "Uninstall"
   nsExec::ExecToStack 'pip uninstall -y mbed-cli'           ;uninstall mbed-cli
   RMDir /r "$INSTDIR\mbed-cli"
+  RMDir /r "$INSTDIR\python"
   Delete "$INSTDIR\${MBED_SERIAL_DRIVER}"
   Delete "$INSTDIR\p.ico"
   Delete "$INSTDIR\mbed_uninstall.exe"
+  ; --- Remove env variables
+  Push "${MBED_CLI_ENV}"
+  Push "$INSTDIR\python\Scripts"
+  Call un.RemoveFromEnvVar
+  ; remove MBED_CLI_ENV from path
+  Push "%${MBED_CLI_ENV}%"
+  Call un.RemoveFromPathSafe
+  ; ---
   RMDir "$INSTDIR\"					    ;remove install folder(only if empty)
   DeleteRegKey SHCTX "${UNINST_KEY}"
 SectionEnd
