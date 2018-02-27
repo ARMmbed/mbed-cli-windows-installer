@@ -34,6 +34,7 @@
 ${StrRep}
 ${StrTrimNewLines}
 !include "Sections.nsh"
+!include "FileFunc.nsh"
 !include "EnvVarUpdate.nsh"
 !include PathUpdate.nsh
 !include WinVer.nsh
@@ -51,7 +52,6 @@ ${StrTrimNewLines}
   !define MBED_CLI_VERSION    "mbed-cli-1.4.0"
   !define PRODUCT_PUBLISHER   "Arm Mbed"
   !define PYTHON_ZIP          "python-2.7.13.zip"
-  !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
   !define GCC_ZIP             "gcc-arm-none-eabi-7-2017-q4-update-win32.zip"
   !define GCC_ENV_VARIABLE    "MBED_GCC_ARM_PATH"
   !define GIT_INSTALLER       "Git-2.16.2-32-bit.exe"
@@ -97,6 +97,11 @@ Section -SETTINGS
   WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr SHCTX "${UNINST_KEY}" "InstallLocation" "$\"$INSTDIR$\""
+  ; --- Set estimated installation size ---
+  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+  IntFmt $0 "0x%08X" $0
+  WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
+  ; --- Create uninstaller ---
   writeUninstaller "$INSTDIR\mbed_uninstall.exe"
 SectionEnd
 
@@ -129,13 +134,12 @@ Section "mbed" SecMbed
   DELETE "$INSTDIR\install_mbed.bat"
   ; --- add shortcut and batch script to windows ---
   File "..\source\p.ico"
-  ; --- add mbed-cli to env variable
-  Push "${MBED_CLI_ENV}"
+  ; make sure windows knows about the change in env variables
+  ; --- add mbed-cli to path
   Push "$INSTDIR\python\Scripts"
-  Call AddToEnvVar
-  ; --- add MBED_CLI_ENV to path
-  Push "%${MBED_CLI_ENV}%"
   Call AddToPathSafe
+  ; make sure windows knows about the change in env variables
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 SectionEnd
 
 Section "git-scm" SecGit
@@ -175,6 +179,8 @@ Section "gcc" SecGCC
   Push "$INSTDIR\gcc\bin"
   Call AddToEnvVar
   Delete $INSTDIR\${GCC_ZIP}
+  ; make sure windows knows about the change in env variables
+  SendMessage ${HWND_BROADCAST} ${WM_SETTINGCHANGE} 0 "STR:Environment" /TIMEOUT=5000
 SectionEnd
 
 Section "mbed serial driver" SecMbedSerialDriver
@@ -214,16 +220,14 @@ Section "Uninstall"
   Delete "$INSTDIR\p.ico"
   Delete "$INSTDIR\mbed_uninstall.exe"
   ; --- Remove env variables
-  Push "${MBED_CLI_ENV}"
-  Push "$INSTDIR\python\Scripts"
-  Call un.RemoveFromEnvVar
-  ;
   Push "${GCC_ENV_VARIABLE}"
   Push "$INSTDIR\gcc\bin"
   Call un.RemoveFromEnvVar
-  ; remove MBED_CLI_ENV from path
-  Push "%${MBED_CLI_ENV}%"
+  ; remove mbed-cli from path
+  Push "$INSTDIR\python\Scripts"
   Call un.RemoveFromPathSafe
+  ; make sure windows knows about the change in env variables
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
   ; ---
   RMDir "$INSTDIR\"					    ;remove install folder(only if empty)
   DeleteRegKey SHCTX "${UNINST_KEY}"
