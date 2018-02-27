@@ -52,7 +52,7 @@ ${StrTrimNewLines}
   !define MBED_CLI_VERSION    "mbed-cli-1.4.0"
   !define PRODUCT_PUBLISHER   "Arm Mbed"
   !define PYTHON_ZIP          "python-2.7.13.zip"
-  !define GCC_ZIP             "gcc-arm-none-eabi-7-2017-q4-update-win32.zip"
+  !define GCC_ZIP             "gcc-arm-none-eabi-6-2017-q2-update-win32.zip"
   !define GCC_ENV_VARIABLE    "MBED_GCC_ARM_PATH"
   !define GIT_INSTALLER       "Git-2.16.2-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
