@@ -47,9 +47,9 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME        "Mbed CLI for Windows"
-  !define PRODUCT_VERSION     "0.5.0"
-  !define MBED_CLI_ZIP        "mbed-cli-1.4.0.zip"
-  !define MBED_CLI_VERSION    "mbed-cli-1.4.0"
+  !define PRODUCT_VERSION     "0.5.1"
+  !define MBED_CLI_ZIP        "mbed-cli-1.5.0.zip"
+  !define MBED_CLI_VERSION    "mbed-cli-1.5.0"
   !define PRODUCT_PUBLISHER   "Arm Mbed"
   !define PYTHON_ZIP          "python-2.7.13.zip"
   !define GCC_ZIP             "gcc-arm-none-eabi-6-2017-q2-update-win32.zip"
@@ -73,7 +73,7 @@ ${StrTrimNewLines}
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
-!define MUI_FINISHPAGE_TITLE 'Now, go build awesome!'
+!define MUI_FINISHPAGE_TITLE 'Complete the Mbed CLI installer'
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_UNPAGE_FINISH
@@ -109,15 +109,12 @@ InstType "Default"
 ;--------------------------------
 ;Installer Sections
 
-Section "python" SecPython
+Section "mbed" SecMbed
   SectionIn 1
+  ; --- install python
   File "..\prerequisites\${PYTHON_ZIP}"
   nsisunz::Unzip "$INSTDIR\${PYTHON_ZIP}" "$INSTDIR"
   Delete $INSTDIR\${PYTHON_ZIP}
-SectionEnd
-
-Section "mbed" SecMbed
-  SectionIn 1
   ; --- install Mbed CLI ---
   ReadRegStr $0 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
   File "..\prerequisites\${MBED_CLI_ZIP}"
@@ -241,6 +238,14 @@ Function .onInit
     MessageBox MB_OK "Windows 7 and above is required"
     Quit
   ${EndIf}
+  
+  ;Remove option to install mbed Serial Driver for Windows 8.0 and higher
+  ${If} ${AtLeastWin8}
+    SectionGetFlags ${SecMbedSerialDriver} $R0
+    IntOp $R0 0 | ${SF_RO}
+    SectionSetFlags ${SecMbedSerialDriver} $R0
+  ${EndIf}
+
   ReadRegStr $R0 SHCTX "${UNINST_KEY}" "UninstallString"
   StrCmp $R0 "" done
 
@@ -266,7 +271,6 @@ functionEnd
 
 ;--------------------------------
 ;Descriptions of Installer options
-LangString DESC_SecPython     ${LANG_ENGLISH} "Install python and pip."
 LangString DESC_SecGCC        ${LANG_ENGLISH} "Install arm-none-eabi-gcc as default compiler. If you have armcc you can use that instead."
 LangString DESC_SecMbed       ${LANG_ENGLISH} "Install Mbed CLI, requires Python to be installed"
 LangString DESC_SecGit        ${LANG_ENGLISH} "Install git-scm, used to access git based repositories."
@@ -276,7 +280,6 @@ LangString DESC_SecMbedSerialDriver ${LANG_ENGLISH} "Installing Windows Mbed ser
 ;--------------------------------
 ;Add descriptions to installer menu
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecPython}      $(DESC_SecPython)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecGCC}         $(DESC_SecGCC)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMbed}        $(DESC_SecMbed)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecGit}         $(DESC_SecGit)
