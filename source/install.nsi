@@ -30,12 +30,15 @@
 !include MUI2.nsh
 !include "LogicLib.nsh"
 !include "StrFunc.nsh"
+!addincludedir ..\include
 ${StrRep}
 ${StrTrimNewLines}
 !include "WordFunc.nsh"
   !insertmacro VersionCompare
 !include "Sections.nsh"
 !include WinVer.nsh
+!include "EnvVarUpdate.nsh"
+!include PathUpdate.nsh
 
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "..\source\HeaderImage_Bitmap.bmp" ; recommended size: 150x57 pixels
@@ -44,18 +47,19 @@ ${StrTrimNewLines}
 
 ;--------------------------------
 ;Config Section
-  !define PRODUCT_NAME      "Mbed CLI for Windows"
-  !define PRODUCT_VERSION   "0.4.4"
-  !define MBED_CLI_ZIP      "mbed-cli-1.4.0.zip"
-  !define MBED_CLI_VERSION  "mbed-cli-1.4.0"
-  !define PRODUCT_PUBLISHER "Arm Mbed"
-  !define PYTHON_INSTALLER  "python-2.7.13.msi"
-  !define GCC_EXE     "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
-  !define GIT_INSTALLER     "Git-2.11.0.3-32-bit.exe"
+  !define PRODUCT_NAME        "Mbed CLI for Windows"
+  !define PRODUCT_VERSION     "0.4.5"
+  !define MBED_CLI_ZIP        "mbed-cli-1.6.0.zip"
+  !define MBED_CLI_VERSION    "mbed-cli-1.6.0"
+  !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
+  !define PRODUCT_PUBLISHER   "Arm Mbed"
+  !define PYTHON_INSTALLER    "python-2.7.13.msi"
+  !define GCC_EXE             "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
+  !define GIT_INSTALLER       "Git-2.16.2-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
-  !define MIN_PYTHON_VERSION "2.7.12"
+  !define MIN_PYTHON_VERSION  "2.7.12"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "Mbed_installer_v${PRODUCT_VERSION}.exe"
@@ -71,7 +75,7 @@ ${StrTrimNewLines}
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
-!define MUI_FINISHPAGE_TITLE 'Now, go build awesome!'
+!define MUI_FINISHPAGE_TITLE 'Complete the Mbed CLI installer'
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_UNPAGE_FINISH
@@ -222,6 +226,14 @@ Function .onInit
     MessageBox MB_OK "Windows 7 and above is required"
     Quit
   ${EndIf}
+
+  ;Remove option to install mbed Serial Driver for Windows 8.0 and higher
+  ${If} ${AtLeastWin8}
+    SectionGetFlags ${SecMbedSerialDriver} $R0
+    IntOp $R0 0 | ${SF_RO}
+    SectionSetFlags ${SecMbedSerialDriver} $R0
+  ${EndIf}
+
   ReadRegStr $R0 SHCTX "${UNINST_KEY}" "UninstallString"
   StrCmp $R0 "" done
 

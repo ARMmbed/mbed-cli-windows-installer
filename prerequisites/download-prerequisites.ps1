@@ -5,8 +5,8 @@ $url = "https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2017q2/gcc-ar
 $file = "$storageDir\gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
 $webclient.DownloadFile($url,$file)
 #Download git-scm
-$url = "https://github.com/git-for-windows/git/releases/download/v2.12.2.windows.1/Git-2.12.2-32-bit.exe"
-$file = "$storageDir\Git-2.11.0.3-32-bit.exe"
+$url = "https://github.com/git-for-windows/git/releases/download/v2.16.2.windows.1/Git-2.16.2-32-bit.exe"
+$file = "$storageDir\Git-2.16.2-32-bit.exe"
 $webclient.DownloadFile($url,$file)
 #Download Mercurial
 $url = "https://mercurial-scm.org/release/windows/Mercurial-4.1.1.exe"
@@ -25,6 +25,6 @@ $url = "https://developer.mbed.org/media/downloads/drivers/mbedWinSerial_16466.e
 $file = "$storageDir\mbedWinSerial_16466.exe"
 $webclient.DownloadFile($url,$file)
 #Download mbed-cli
-$url = "https://github.com/ARMmbed/mbed-cli/archive/1.4.0.zip"
-$file = "$storageDir\mbed-cli-1.4.0.zip"
+$url = "https://github.com/ARMmbed/mbed-cli/archive/1.6.0.zip"
+$file = "$storageDir\mbed-cli-1.6.0.zip"
 $webclient.DownloadFile($url,$file)
