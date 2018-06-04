@@ -48,12 +48,12 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME        "Mbed CLI for Windows"
-  !define PRODUCT_VERSION     "0.4.6"
-  !define MBED_CLI_ZIP        "mbed-cli-1.7.1.zip"
-  !define MBED_CLI_VERSION    "mbed-cli-1.7.1"
+  !define PRODUCT_VERSION     "0.4.7"
+  !define MBED_CLI_ZIP        "mbed-cli-1.7.2.zip"
+  !define MBED_CLI_VERSION    "mbed-cli-1.7.2"
   !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
   !define PRODUCT_PUBLISHER   "Arm Mbed"
-  !define PYTHON_INSTALLER    "python-2.7.13.msi"
+  !define PYTHON_INSTALLER    "python-2.7.14.msi"
   !define GCC_EXE             "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
   !define GIT_INSTALLER       "Git-2.17.1.2-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
