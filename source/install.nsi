@@ -48,9 +48,9 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME        "Mbed CLI for Windows"
-  !define PRODUCT_VERSION     "0.4.7"
-  !define MBED_CLI_ZIP        "mbed-cli-1.7.2.zip"
-  !define MBED_CLI_VERSION    "mbed-cli-1.7.2"
+  !define PRODUCT_VERSION     "0.4.8"
+  !define MBED_CLI_ZIP        "mbed-cli-1.7.5.zip"
+  !define MBED_CLI_VERSION    "mbed-cli-1.7.5"
   !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
   !define PRODUCT_PUBLISHER   "Arm Mbed"
   !define PYTHON_INSTALLER    "python-2.7.14.msi"

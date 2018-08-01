@@ -17,7 +17,7 @@ $url = "https://www.python.org/ftp/python/2.7.14/python-2.7.14.msi"
 $file = "$storageDir\python-2.7.14.msi"
 $webclient.DownloadFile($url,$file)
 #Download Python 64bit
-$url = "https://www.python.org/ftp/python/2.7.14/python-2.7.14.amd64.msi"
+$url = "https://python.org/ftp/python/2.7.14/python-2.7.14.amd64.msi"
 $file = "$storageDir\python-2.7.14.amd64.msi"
 $webclient.DownloadFile($url,$file)
 #Download mbedWinSerial
@@ -25,6 +25,6 @@ $url = "https://developer.mbed.org/media/downloads/drivers/mbedWinSerial_16466.e
 $file = "$storageDir\mbedWinSerial_16466.exe"
 $webclient.DownloadFile($url,$file)
 #Download mbed-cli
-$url = "https://github.com/ARMmbed/mbed-cli/archive/1.7.2.zip"
-$file = "$storageDir\mbed-cli-1.7.2.zip"
+$url = "https://www.github.com/ARMmbed/mbed-cli/archive/1.7.5.zip"
+$file = "$storageDir\mbed-cli-1.7.5.zip"
 $webclient.DownloadFile($url,$file)
