@@ -25,6 +25,6 @@ $url = "https://developer.mbed.org/media/downloads/drivers/mbedWinSerial_16466.e
 $file = "$storageDir\mbedWinSerial_16466.exe"
 $webclient.DownloadFile($url,$file)
 #Download mbed-cli
-$url = "https://www.github.com/ARMmbed/mbed-cli/archive/1.7.5.zip"
-$file = "$storageDir\mbed-cli-1.7.5.zip"
+$url = "https://www.github.com/ARMmbed/mbed-cli/archive/1.8.0.zip"
+$file = "$storageDir\mbed-cli-1.8.0.zip"
 $webclient.DownloadFile($url,$file)

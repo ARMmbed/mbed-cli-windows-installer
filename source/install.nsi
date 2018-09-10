@@ -48,9 +48,9 @@ ${StrTrimNewLines}
 ;--------------------------------
 ;Config Section
   !define PRODUCT_NAME        "Mbed CLI for Windows"
-  !define PRODUCT_VERSION     "0.4.8"
-  !define MBED_CLI_ZIP        "mbed-cli-1.7.5.zip"
-  !define MBED_CLI_VERSION    "mbed-cli-1.7.5"
+  !define PRODUCT_VERSION     "0.4.9"
+  !define MBED_CLI_ZIP        "mbed-cli-1.8.0.zip"
+  !define MBED_CLI_VERSION    "mbed-cli-1.8.0"
   !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
   !define PRODUCT_PUBLISHER   "Arm Mbed"
   !define PYTHON_INSTALLER    "python-2.7.14.msi"
@@ -60,6 +60,7 @@ ${StrTrimNewLines}
   !define MBED_SERIAL_DRIVER  "mbedWinSerial_16466.exe"
   !define UNINST_KEY          "Software\Microsoft\Windows\CurrentVersion\Uninstall\mbed_cli"
   !define MIN_PYTHON_VERSION  "2.7.12"
+  !define MAX_PYTHON_VERSION  "3.0.0"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
   OutFile "Mbed_installer_v${PRODUCT_VERSION}.exe"
@@ -91,15 +92,6 @@ BrandingText "next gen build system from ${PRODUCT_PUBLISHER}"
 Section -SETTINGS
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${PRODUCT_NAME}"
-  WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\mbed_uninstall.exe$\""
-  WriteRegDWORD SHCTX "${UNINST_KEY}" "NoModify" "1"
-  WriteRegDWORD SHCTX "${UNINST_KEY}" "NoRepair" "1"
-  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\p.ico"
-  WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
-  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr SHCTX "${UNINST_KEY}" "InstallLocation" "$\"$INSTDIR$\""
-  writeUninstaller "$INSTDIR\mbed_uninstall.exe"
 SectionEnd
 
 ;--------------------------------
@@ -116,27 +108,39 @@ Section "python" SecPython
   SectionIn 1
   SetOutPath $INSTDIR
   ClearErrors
-  EnumRegKey $0 HKLM "SOFTWARE\Python\PythonCore\2.7" 0
-  ${If} ${Errors}
-    Goto pythonInstall
-  ${Else}
-    nsExec::ExecToStack 'python --version'
-    Pop $0
-    Pop $1
-    ${if} $0 != 0
-      goto pythonInstall
-    ${EndIf}
-    ;get python 2 version
-    ${StrRep} $0 $1 "Python " ""
-    ${StrTrimNewLines} $0 $0
-    ;compare version
-    ${VersionCompare} $0  ${MIN_PYTHON_VERSION} $1
-    ${if} $1 == 2
-      MessageBox MB_YESNO "${PRODUCT_NAME} requires Python version ${MIN_PYTHON_VERSION} or higher to work properly (Python 3 is not supported). Python $0 is already installed on this system, would you like to overwrite this installation?" IDYES pythonInstall IDNO pythonExit
-    ${Else}
-      goto pythonExit
-    ${endif}
+  nsExec::ExecToStack 'python --version'
+  Pop $0
+  Pop $1
+  ${if} $0 != 0
+    ;Python is not installed
+    goto pythonInstall
   ${EndIf}
+  ;get installed python version
+  ${StrRep} $0 $1 "Python " ""
+  ${StrTrimNewLines} $0 $0
+  ;compare Python version
+  ${VersionCompare} $0  ${MIN_PYTHON_VERSION} $1
+  ${Switch} $1
+  	${Case} '0'
+      ;Versions are even
+      goto pythonExit
+      ${Break}
+    ${Case} '1'
+      ;Installed version of Python is bigger than minimal requirement
+      ;Check if installed version is lower than maximal (Python 3 not supported)
+      ${VersionCompare} $0  ${MAX_PYTHON_VERSION} $1
+      ${If} $1 == 1
+          MessageBox MB_OK "Installation aborted. Python 3 has been detected on your system. Please uninstall it first and then continue installation."
+          Quit
+      ${Else}
+      	goto pythonExit
+      ${EndIf}
+      ${Break}
+    ${Default}
+      ;Installed version of Python is lower than minimal requirement
+      MessageBox MB_YESNO "${PRODUCT_NAME} requires Python version ${MIN_PYTHON_VERSION} or higher to work properly (Python 3 is not supported). Python $0 is already installed on this system, would you like to overwrite this installation?" IDYES pythonInstall IDNO pythonExit
+      ${Break}
+  ${EndSwitch}
   pythonInstall:
     File "..\prerequisites\${PYTHON_INSTALLER}"
     ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
@@ -158,6 +162,16 @@ Section "mbed" SecMbed
   DELETE "$INSTDIR\pip_install_mbed.bat"
   ; --- add shortcut and batch script to windows ---
   File "..\source\p.ico"
+  ; Set registry keys
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${PRODUCT_NAME}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\mbed_uninstall.exe$\""
+  WriteRegDWORD SHCTX "${UNINST_KEY}" "NoModify" "1"
+  WriteRegDWORD SHCTX "${UNINST_KEY}" "NoRepair" "1"
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\p.ico"
+  WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "InstallLocation" "$\"$INSTDIR$\""
+  writeUninstaller "$INSTDIR\mbed_uninstall.exe"
 SectionEnd
 
 Section "git-scm" SecGit
