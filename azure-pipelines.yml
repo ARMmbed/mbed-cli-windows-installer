@@ -15,10 +15,11 @@ jobs:
                   powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
                 displayName: 'Pull mbed-cli dependencies'
             -
-                script: makensis source/install.nsi
+                script: |
+                  makensis "/XOutFile $(Build.ArtifactStagingDirectory)/Mbed_installer.exe" source/install.nsi
                 displayName: 'Build mbed-cli installer'
             -
                 task: PublishBuildArtifacts@1
                 inputs:
-                  pathtoPublish: source/Mbed_installer_v0.4.10.exe
+                  pathtoPublish: $(Build.ArtifactStagingDirectory)/Mbed_installer.exe
                   artifactName: installer

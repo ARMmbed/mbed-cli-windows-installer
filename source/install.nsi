@@ -62,7 +62,6 @@ ${StrTrimNewLines}
   !define MIN_PYTHON_VERSION  "2.7.12"
 
   Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-  OutFile "Mbed_installer_v${PRODUCT_VERSION}.exe"
   InstallDir "C:\mbed-cli"
   ShowInstDetails show
 
