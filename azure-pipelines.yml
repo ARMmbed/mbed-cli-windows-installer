@@ -17,3 +17,7 @@ jobs:
             -
                 script: makensis source/install.nsi
                 displayName: 'Build mbed-cli installer'
+            -
+                task: PublishBuildArtifacts@1
+                inputs:
+                  pathtoPublish: source/Mbed_installer_v0.4.10.exe
