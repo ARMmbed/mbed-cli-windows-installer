@@ -17,9 +17,11 @@ $ cd prerequisites
 $ powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
 ```
 
-4. Open NSIS, click 'Compile NSI Scripts'.
-5. Click 'File > Load Script' and select `source/install.nsi`.
-6. Click 'Test installer' to build (output directory is `source`).
+4. Run makensis on the `source/install.nsi` with an output file.
+```
+$ makensis "/XOutFile Mbed_installer.exe" source/install.nsi
+```
+5. Test the installer that was just generated
 
 
 ## Sign installer using Arm license server
