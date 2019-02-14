@@ -1,0 +1,25 @@
+jobs:
+    -
+        job: Build_Installer
+        strategy:
+            matrix:
+                Windows2017:
+                    imageName: vs2017-win2016
+                    extraActions: 'false'
+        pool:
+            vmImage: $(imageName)
+        steps:
+            -
+                script: |
+                  cd prerequisites
+                  powershell -ExecutionPolicy ByPass -File download-prerequisites.ps1
+                displayName: 'Pull mbed-cli dependencies'
+            -
+                script: |
+                  makensis "/XOutFile $(Build.ArtifactStagingDirectory)/Mbed_installer.exe" source/install.nsi
+                displayName: 'Build mbed-cli installer'
+            -
+                task: PublishBuildArtifacts@1
+                inputs:
+                  pathtoPublish: $(Build.ArtifactStagingDirectory)/Mbed_installer.exe
+                  artifactName: installer
