@@ -1,3 +1,4 @@
+[Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
 $storageDir = $pwd
 $webclient = New-Object System.Net.WebClient
 #Download gcc-arm-none-eabi
@@ -25,6 +26,6 @@ $url = "https://developer.mbed.org/media/downloads/drivers/mbedWinSerial_16466.e
 $file = "$storageDir\mbedWinSerial_16466.exe"
 $webclient.DownloadFile($url,$file)
 #Download mbed-cli
-$url = "https://www.github.com/ARMmbed/mbed-cli/archive/1.9.0.zip"
-$file = "$storageDir\mbed-cli-1.9.0.zip"
+$url = "https://www.github.com/ARMmbed/mbed-cli/archive/1.10.0.zip"
+$file = "$storageDir\mbed-cli-1.10.0.zip"
 $webclient.DownloadFile($url,$file)

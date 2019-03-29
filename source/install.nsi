@@ -37,6 +37,7 @@ ${StrTrimNewLines}
   !insertmacro VersionCompare
 !include "Sections.nsh"
 !include WinVer.nsh
+!include x64.nsh
 !include "EnvVarUpdate.nsh"
 !include PathUpdate.nsh
 
@@ -49,11 +50,12 @@ ${StrTrimNewLines}
 ;Config Section
   !define PRODUCT_NAME        "Mbed CLI for Windows"
   !define PRODUCT_VERSION     "0.4.10"
-  !define MBED_CLI_ZIP        "mbed-cli-1.9.0.zip"
-  !define MBED_CLI_VERSION    "mbed-cli-1.9.0"
+  !define MBED_CLI_ZIP        "mbed-cli-1.10.0.zip"
+  !define MBED_CLI_VERSION    "mbed-cli-1.10.0"
   !define MBED_CLI_ENV        "MBED_CLI_TOOLS"
   !define PRODUCT_PUBLISHER   "Arm Mbed"
   !define PYTHON_INSTALLER    "python-2.7.14.msi"
+  !define PYTHON_INSTALLER_64 "python-2.7.14.amd64.msi"
   !define GCC_EXE             "gcc-arm-none-eabi-6-2017-q2-update-win32.exe"
   !define GIT_INSTALLER       "Git-2.17.1.2-32-bit.exe"
   !define MERCURIAL_INSTALLER "Mercurial-4.1.1.exe"
@@ -137,11 +139,18 @@ Section "python" SecPython
     ${endif}
   ${EndIf}
   pythonInstall:
+  ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
+  ; configure python to add itsself to the path.
+  ; check for 64-bit Windows
+  ${If} ${RunningX64}
+    File "..\prerequisites\${PYTHON_INSTALLER_64}"
+    nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER_64}" ALLUSERS=1 ADDLOCAL=ALL /qn'
+    Delete $INSTDIR\${PYTHON_INSTALLER_64}
+  ${Else}
     File "..\prerequisites\${PYTHON_INSTALLER}"
-    ; Install options for python taken from https://www.python.org/download/releases/2.5/msi/
-    ; This gets python to add itsself to the path.
     nsExec::ExecToStack '"msiexec" /i "$INSTDIR\${PYTHON_INSTALLER}" ALLUSERS=1 ADDLOCAL=ALL /qn'
     Delete $INSTDIR\${PYTHON_INSTALLER}
+  ${EndIf}
   pythonExit:
 SectionEnd
 
