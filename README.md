@@ -8,7 +8,7 @@ This repository contains the source files to build the mbed CLI Windows installe
 
 ## Setup
 
-1. Install NSIS, which can be found at [nsis.sourceforge.net](http://nsis.sourceforge.net/Download).
+1. Install NSIS, which can be found at [sourceforge.net](http://sourceforge.net).
 2. Download this repository.
 3. Download prerequisites manually or run following powershell script.
 
@@ -70,7 +70,7 @@ $ mbed_installer_{version}.exe /S
 4. Use `mbed import mbed-os-example-blinky` to import an example program.
 
 
-**Manual installation:** You can install mbed CLI also by hand. See the [mbed CLI repository](https://github.com/ARMmbed/mbed-cli#installing-mbed-cli).
+**Manual installation:** You can also install mbed CLI by hand. See the [mbed CLI repository](https://github.com/ARMmbed/mbed-cli#installing-mbed-cli).
 
 ## Updating pre-requisites
 
